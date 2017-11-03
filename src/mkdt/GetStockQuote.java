@@ -2,12 +2,10 @@ package mkdt;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.URL;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,28 +17,79 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.HttpEntity;
 import org.apache.http.util.EntityUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import dao.StockPrice;
+import dao.StockPriceDAO;
+import dao.TickerDBData;
+
 
 public class GetStockQuote {
+	private static int nseCount = 0;
+	private static int bseCount = 0;
 	final static Pattern nse_pattern = Pattern.compile("\"lastPrice\":\"(.+?)\",");
 	final static Pattern nse_patternDate = Pattern.compile("\"lastUpdateTime\":\"(.+?)\",");
 	final static Pattern bse_pattern = Pattern.compile("<td.*>(.+?)</td><td><img");
 	public static SimpleDateFormat stockQuoteDateTime = new SimpleDateFormat("dd-MMM-yyyy h:m:s");
+	private static SimpleDateFormat yyyymmdd = new SimpleDateFormat("yyyyMMdd");
 	static {
 		stockQuoteDateTime.setTimeZone(TimeZone.getTimeZone("IST"));
 	}
 	
-	public static Map<String, CurrentMarketPrice> getCurrentMarkerPrice(List<CurrentMarketPrice> request){
-		Map<String , CurrentMarketPrice> markerResponse = new HashMap<String , CurrentMarketPrice>();
+	private static void savePriceInDB(String exchange, String ticker, double price){
+		String key = StockPriceDAO.mlabKeySonu;
+		String historicalPrice = StockPriceDAO.getHistoricalPrice(exchange, ticker, key);
+		if (StockPriceDAO.noCollection.equals(historicalPrice)){
+			TickerDBData tickerDBData = new TickerDBData();
+			StockPrice stockPrice = new StockPrice();
+			stockPrice.setPrice(price);
+			stockPrice.setDate(Integer.parseInt(yyyymmdd.format(new Date())));
+			tickerDBData.getStockPriceList().add(stockPrice);
+			StockPriceDAO.insertUpdateData(exchange, ticker, dataStr(tickerDBData), key, false);
+		}else {
+			TickerDBData tickerDBData = toTickerData( historicalPrice);
+			List<StockPrice> stockPrices = tickerDBData.getStockPriceList();
+			
+			if (stockPrices.get(0).getDate() < Integer.parseInt(yyyymmdd.format(new Date()))){
+				StockPrice stockPrice = new StockPrice();
+				stockPrice.setPrice(price);
+				stockPrice.setDate(Integer.parseInt(yyyymmdd.format(new Date())));
+				stockPrices.add(0,stockPrice);
+				StockPriceDAO.insertUpdateData(exchange, ticker, dataStr(tickerDBData), key, true);
+			}
+			
+		}
+		
+		if ("NSE".equals(exchange)){
+			addToNSECount();
+		}else {
+			addToBSECount();
+		}
+	}
+	
+	private static String dataStr(TickerDBData tickerDBData){
+		Gson  json = new Gson();
+		return  json.toJson(tickerDBData, new TypeToken<TickerDBData>() {}.getType());
+	}
+	private static TickerDBData toTickerData(String jsonStr){
+		Gson  json = new Gson();
+		return  (TickerDBData)json.fromJson(jsonStr, new TypeToken<TickerDBData>() {}.getType());
+	}
+	public static CurrentMarketPrice getCurrentMarkerPrice(CurrentMarketPrice ticker){
+		CurrentMarketPrice markerResponse = new  CurrentMarketPrice();
 		
 		String nseURL = "https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuote.jsp?symbol=";
 		String nsePostFix = "&illiquid=0&smeFlag=0&itpFlag=0";
 		String bseURL = "http://www.bseindia.com/stock-share-price/SiteCache/IrBackupStockReach.aspx?scripcode=";
-
+		StringBuilder respoBse = null;
 
 		 CloseableHttpClient httpclient = HttpClients.createDefault();
 	
-		for (CurrentMarketPrice ticker: request){
+		
 			if ("NSE".equals(ticker.getE())){
+				
+				StringBuilder respoNse = new StringBuilder();
 				try {
 					
 			       
@@ -51,8 +100,8 @@ public class GetStockQuote {
 		                HttpEntity entity1 = response1.getEntity();
 		                
 		                BufferedReader br = new BufferedReader(new InputStreamReader(entity1.getContent()));
-		                String line;
-		                StringBuilder respoNse = new StringBuilder();
+		                String line = "";
+		                
 		                while ((line = br.readLine())!= null) {
 		                	respoNse.append(line);
 		                }
@@ -60,29 +109,36 @@ public class GetStockQuote {
 		                // and ensure it is fully consumed
 		                EntityUtils.consume(entity1);
 		                
-		              
+		                //System.out.println(respoNse);
 			            final Matcher quote = nse_pattern.matcher(respoNse);
 						Matcher quoteDate = nse_patternDate.matcher(respoNse);
-						quote.find();
-						quoteDate.find();
-						CurrentMarketPrice nseQuote = new CurrentMarketPrice();
-						nseQuote.setT(ticker.getT());
-						nseQuote.setE("NSE");
-						nseQuote.setLt_dts(quoteDate.group(1));
-						String price = quote.group(1).replaceAll(",", "");
-						nseQuote.setL_fix(Double.parseDouble(price));
-						System.out.println(nseQuote.getT()+" NSE Quote : "+nseQuote.getL_fix());
-						markerResponse.put(nseQuote.getT(), nseQuote);
+						if (quote.find() && quoteDate.find()){
+							CurrentMarketPrice nseQuote = new CurrentMarketPrice();
+							nseQuote.setT(ticker.getT());
+							nseQuote.setE("NSE");
+							nseQuote.setLt_dts(quoteDate.group(1));
+							String price = quote.group(1).replaceAll(",", "");
+							nseQuote.setL_fix(Double.parseDouble(price));
+							
+							markerResponse = nseQuote;
+						}else {
+							System.out.println(" No info for "+ticker.getT());
+							//System.out.println(respoNse);
+						}
+						
+						
 		            } finally {
 		                response1.close();
 		            }
 		            
 					
 		        } catch (Exception e) {
-		        	
+		        	System.out.println(respoNse);
+		        	System.out.println(" Error for : "+ticker.getT());
 		        	e.printStackTrace();
 		        }
 			}else {
+				
 					try {
 						
 						HttpGet httpGet = new HttpGet(bseURL+ticker.getT());
@@ -92,8 +148,8 @@ public class GetStockQuote {
 			                HttpEntity entity1 = response1.getEntity();
 			                
 			                BufferedReader br = new BufferedReader(new InputStreamReader(entity1.getContent()));
-			                String line;
-			                StringBuilder respoBse = new StringBuilder();
+			                String line = "";
+			                 respoBse = new StringBuilder();
 			                while ((line = br.readLine())!= null) {
 			                	respoBse.append(line);
 			                }
@@ -101,47 +157,66 @@ public class GetStockQuote {
 			                // and ensure it is fully consumed
 			                EntityUtils.consume(entity1);
 			                
+			                if (null != respoBse &&  respoBse.indexOf("nochange.gif") <0 && respoBse.indexOf("Sorry") <0 ){
+			                	 final Matcher quote = bse_pattern.matcher(respoBse);
+									quote.find();
+									CurrentMarketPrice bseQuote = new CurrentMarketPrice();
+									bseQuote.setT(ticker.getT());
+									bseQuote.setE("BSE");
+									bseQuote.setLt_dts(stockQuoteDateTime.format(new Date()));
+									String price = quote.group(1).replaceAll(",", "");
+									bseQuote.setL_fix(Double.parseDouble(price));
+									markerResponse =  bseQuote;
+			                }
 			              
-			                final Matcher quote = bse_pattern.matcher(respoBse);
-							quote.find();
-							CurrentMarketPrice bseQuote = new CurrentMarketPrice();
-							bseQuote.setT(ticker.getT());
-							bseQuote.setE("BSE");
-							bseQuote.setLt_dts(stockQuoteDateTime.format(new Date()));
-							String price = quote.group(1).replaceAll(",", "");
-							bseQuote.setL_fix(Double.parseDouble(price));
-							markerResponse.put(bseQuote.getT(), bseQuote);
-							System.out.println(bseQuote.getT()+" BSE Quote : "+bseQuote.getL_fix());
+			               
+							//System.out.println(" response from bse "+markerResponse.getT()+ " : "+ markerResponse.getL_fix());
 			            } finally {
 			                response1.close();
 			            }
 			            
 					
-			       /* URL url = new URL(bseURL+ticker.getT());
-		            HTTPRequest req = new HTTPRequest(url, HTTPMethod.GET, lFetchOptions);
-		            HTTPResponse res = fetcher.fetch(req);
-		            String respoBse =(new String(res.getContent()));
-		            final Matcher quote = bse_pattern.matcher(respoBse);
-					quote.find();
-					CurrentMarketPrice bseQuote = new CurrentMarketPrice();
-					bseQuote.setT(ticker.getT());
-					bseQuote.setE("BSE");
-					bseQuote.setLt_dts(stockQuoteDateTime.format(new Date()));
-					String price = quote.group(1).replaceAll(",", "");
-					bseQuote.setL_fix(Double.parseDouble(price));
-					markerResponse.put(bseQuote.getT(), bseQuote);*/
+			     
 					
 		        } catch (Exception e) {
 		        	
-		        	e.printStackTrace();
+		        	if (null != respoBse){
+		        		System.out.println(respoBse.toString());
+		        	}else {
+		        		e.printStackTrace();
+		        	}
+		        	
+		        	if (null != ticker){
+		        		System.out.println(bseURL+ticker.getT());
+		        	}
+		        	
+		        	//System.out.println(" Error for : "+ticker.getT());
+		        	//e.printStackTrace();
 		        }
 				
 				
 			}
-		}
 	
+			if (null!= markerResponse && markerResponse.getL_fix() > 0){
+				savePriceInDB(markerResponse.getE(), markerResponse.getT(), markerResponse.getL_fix());
+			}
+			
 		
 		return markerResponse;
 	}
 
+	
+	public static synchronized void   addToNSECount(){
+		nseCount++;
+	}
+	public static synchronized void   addToBSECount(){
+		bseCount++;
+	}
+	
+	public static int   getNSECount(){
+		return nseCount;
+	}
+	public static int  getBSECount(){
+		return bseCount;
+	}
 }
