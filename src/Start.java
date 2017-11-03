@@ -1,5 +1,8 @@
 
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,14 +24,28 @@ public class Start {
 		
 		List<CurrentMarketPrice> tickers =  NSE.getNSEScripts();
 		tickers.addAll(BSE.getNSEScripts());
+		boolean internetAvailable = false;
+		while (!internetAvailable){
+			
+			try {
+				Thread.sleep(1000);
+				InetAddress Address = InetAddress.getByName("www.nseindia.com");
+				internetAvailable = Address.isReachable(1000);
+			} catch (Exception e) {
+				System.err.println(" Not able to connect to internet!!!");
+				
+			} 
+		}
 		
 		
 		
-		/* List<CurrentMarketPrice> tickers  = new ArrayList<CurrentMarketPrice>();
+		/*List<CurrentMarketPrice> tickers  = new ArrayList<CurrentMarketPrice>();
 		 CurrentMarketPrice t = new CurrentMarketPrice();
 		t.setE("NSE");
 		t.setT("20MICRONS");
 		tickers.add(t);*/
+		
+		
 		for (CurrentMarketPrice ticker: tickers ) {
             Runnable worker = new StockWorker(ticker);
             executor.execute(worker);
