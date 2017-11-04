@@ -1,11 +1,8 @@
 
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
 
+import java.net.InetAddress;
+import java.util.List;
 import mkdt.CurrentMarketPrice;
 import mkdt.GetStockQuote;
 import mkdt.StockWorker;
@@ -20,10 +17,13 @@ public class Start {
 		System.out.println(" Scanning all the stocks now....");
 		//https://www.nseindia.com/archives/nsccl/var/C_VAR1_30102017_1.DAT
 	    //http://www.bseindia.com/corporates/List_Scrips.aspx
-		ExecutorService executor = Executors.newFixedThreadPool(10);
+		
+		ExecutorService executor = Executors.newFixedThreadPool(5);
 		
 		List<CurrentMarketPrice> tickers =  NSE.getNSEScripts();
+		GetStockQuote.totalNSECount = tickers.size();
 		tickers.addAll(BSE.getNSEScripts());
+		GetStockQuote.totalBSECount = tickers.size() - GetStockQuote.totalNSECount;
 		boolean internetAvailable = false;
 		while (!internetAvailable){
 			
@@ -53,7 +53,7 @@ public class Start {
         executor.shutdown();
         while (!executor.isTerminated()) {
         }
-        
+        System.out.println(" BSE finished in Minutes "+((System.currentTimeMillis()- GetStockQuote.bseStartTime )/60000));
         System.out.println("NSE scripts updated "+GetStockQuote.getNSECount());
         System.out.println("BSE scripts updated "+GetStockQuote.getBSECount());
 		

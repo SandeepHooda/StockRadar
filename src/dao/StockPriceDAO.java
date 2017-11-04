@@ -75,9 +75,9 @@ public class StockPriceDAO {
 	
 	
 	
-	public static void insertUpdateData( String exchange, String ticker, String data, String key,  boolean isUpdate){
-		exchange = exchange.toLowerCase();
-		String httpsURL = "https://api.mlab.com/api/1/databases/"+exchange+"/collections/"+ticker+"?apiKey="+key;
+	public static void insertUpdateData( String db, String collection, String data, String key,  boolean isUpdate){
+		db = db.toLowerCase();
+		String httpsURL = "https://api.mlab.com/api/1/databases/"+db+"/collections/"+collection+"?apiKey="+key;
 		
 		 try {
 			 CloseableHttpClient client = HttpClients.createDefault();
