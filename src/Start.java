@@ -2,6 +2,9 @@
 
 
 import java.net.InetAddress;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import mkdt.CurrentMarketPrice;
 import mkdt.GetStockQuote;
@@ -15,6 +18,12 @@ public class Start {
 	
 	public static void main(String[] args) {
 		System.out.println(" Scanning all the stocks now....");
+		
+		Calendar cal = new GregorianCalendar();
+		if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
+			System.out.println(" Today is exchange Holiday ");
+			return ;
+		}
 		//https://www.nseindia.com/archives/nsccl/var/C_VAR1_30102017_1.DAT
 	    //http://www.bseindia.com/corporates/List_Scrips.aspx
 		
