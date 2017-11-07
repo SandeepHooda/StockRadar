@@ -74,7 +74,7 @@ public class GetStockQuote {
 			
 		}
 		
-		if ("NSE".equals(exchange)){
+		if ("NSE".equalsIgnoreCase(exchange)){
 			synchronized (nseTickersList) {
 				nseTickersList.add(tickerDBData);
 				/*if (nseTickersList.size() == 10){
@@ -234,7 +234,7 @@ public class GetStockQuote {
 					
 					if (bseStartTime == 0){
 						bseStartTime = System.currentTimeMillis();
-						StockPriceDAO.insertUpdateData("nse-tickers-xirr", "nse-tickers-xirr", dataStr(nseTickersList), StockPriceDAO.mlabKeySonu, true);
+						
 						System.out.println(" NSE finished in Minutes "+((bseStartTime - nseStartTime)/60000));
 						
 					}
@@ -307,7 +307,9 @@ public class GetStockQuote {
 		return markerResponse;
 	}
 
-	
+	public static void saveXirrListToDB(){
+		StockPriceDAO.insertUpdateData("nse-tickers-xirr", "nse-tickers-xirr", dataStr(nseTickersList), StockPriceDAO.mlabKeySonu, true);
+	}
 	public static synchronized void   addToNSECount(){
 		nseCount++;
 	}

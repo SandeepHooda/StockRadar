@@ -63,6 +63,8 @@ public class Start {
         executor.shutdown();
         while (!executor.isTerminated()) {
         }
+        GetStockQuote.saveXirrListToDB();
+        System.out.println("Saved xirr data to nse-tickers-xirr "+GetStockQuote.getNSECount());
         System.out.println(" BSE finished in Minutes "+((System.currentTimeMillis()- GetStockQuote.bseStartTime )/60000));
         System.out.println("NSE scripts updated "+GetStockQuote.getNSECount());
         System.out.println("BSE scripts updated "+GetStockQuote.getBSECount());
