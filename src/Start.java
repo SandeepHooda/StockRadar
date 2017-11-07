@@ -31,7 +31,7 @@ public class Start {
 		
 		List<CurrentMarketPrice> tickers =  NSE.getNSEScripts();
 		GetStockQuote.totalNSECount = tickers.size();
-		tickers.addAll(BSE.getNSEScripts());
+		//tickers.addAll(BSE.getNSEScripts());
 		GetStockQuote.totalBSECount = tickers.size() - GetStockQuote.totalNSECount;
 		boolean internetAvailable = false;
 		while (!internetAvailable){
