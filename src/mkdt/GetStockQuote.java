@@ -87,7 +87,7 @@ public class GetStockQuote {
 			addToBSECount();
 		}
 		
-		System.out.printf("Progress NSE: %.2f BSE pregress %.2f \r",(nseCount/ totalNSECount *100),(bseCount/ totalBSECount *100));
+		System.out.printf("Progress NSE: %.2f \r",(nseCount/ totalNSECount *100));
 		//System.out.printf(" \r Progress NSE: %.2f "+nseCount+" BSE pregress %.2f "+ totalNSECount );
 	}
 	

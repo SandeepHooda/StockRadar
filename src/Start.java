@@ -40,6 +40,7 @@ public class Start {
 				Thread.sleep(1000);
 				InetAddress Address = InetAddress.getByName("www.nseindia.com");
 				internetAvailable = Address.isReachable(1000);
+				internetAvailable = true;
 			} catch (Exception e) {
 				System.err.println(" Not able to connect to internet!!!");
 				

@@ -5,6 +5,9 @@ public class CurrentMarketPrice {
 	private String e;
 	private String lt_dts;
 	private double l_fix;
+	public String toString(){
+		return t;
+	}
 	public String getT() {
 		return t;
 	}
