@@ -12,13 +12,16 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 public class CorpAnalysis {
-
+	public static String [] dataArray = null;
 	public static void main(String[] args) {
-		String stock = "Maruti_Suzuki_India_Ltd/5496";
+		dataArray = new String[12];
+		String stock = "DCM_Shriram_Ltd/2337";
 		getCurrentMarketPrice(stock);
 		pl(stock);
 		balanceSheet(stock);
-		
+		for (int i=1;i<12;i++){
+			System.out.println(dataArray[i]);
+		}
 	}
 
 public static void getCurrentMarketPrice(String stock){
@@ -42,7 +45,8 @@ public static void getCurrentMarketPrice(String stock){
              EntityUtils.consume(entity1);
              final Matcher data = find_pattern.matcher(response);
              data.find();
-             System.out.println("CMP: "+data.group(1));
+             //System.out.println("5. CMP: "+data.group(1));
+             dataArray[5] = "5. CMP: "+data.group(1);
 		 
 	    } catch (IOException e) {
        	
@@ -75,9 +79,10 @@ public static void pl(String stock){
              final Matcher profit = profit_pattern.matcher(response);
              profit.find();
             
-             System.out.println("Sales turn over: "+data.group(1));
-             System.out.println("Net profit: "+profit.group(1)+" "+profit.group(2)+" "+profit.group(3)+" "+profit.group(4)+" "+profit.group(5));
-            
+             //System.out.println("1. Sales turn over: "+data.group(1));
+             //System.out.println("8. Net profit: "+profit.group(1)+" "+profit.group(2)+" "+profit.group(3)+" "+profit.group(4)+" "+profit.group(5));
+             dataArray[1] = "1. Sales turn over: "+data.group(1);
+             dataArray[8] = "8. Net profit: "+profit.group(1)+" "+profit.group(2)+" "+profit.group(3)+" "+profit.group(4)+" "+profit.group(5);
 		 
 	    } catch (IOException e) {
        	
@@ -120,22 +125,31 @@ public static void balanceSheet(String stock){
              String totalDebt = debt.group(1);
              debt.find();
              String pe = debt.group(1);
-             System.out.println("Total Shareholders Funds: "+data.group(1));
-             System.out.println("Total Debt: "+totalDebt);
-             System.out.println("BookValue: "+bookValue);
-             System.out.println("PE & EPS: "+pe);
-             System.out.println("52 week  high low : "+lowHigh);
+             /*System.out.println("2. Total Shareholders Funds: "+data.group(1));
+             System.out.println("3. Total Debt: "+totalDebt);
+             System.out.println("4. BookValue: "+bookValue);
+             System.out.println("6. PE & EPS: "+pe);
+             System.out.println("7. 52 week  high low : "+lowHigh);*/
+             dataArray[2] ="2. Total Shareholders Funds: "+data.group(1);
+             dataArray[3] ="3. Total Debt: "+totalDebt;
+             dataArray[4] ="4. BookValue: "+bookValue;
+             dataArray[6] ="6. PE & EPS: "+pe;
+             dataArray[7] ="7. 52 week  high low : "+lowHigh;
+             
              
              final Matcher asset = asset_pattern.matcher(response);
              asset.find();
-             System.out.println("Total current assets : "+asset.group(1));
+             //System.out.println("9. Total current assets : "+asset.group(1));
+             dataArray[9] ="9. Total current assets : "+asset.group(1);
              final Matcher liability = liability_pattern.matcher(response);
              liability.find();
-             System.out.println("Total current liabilities : "+liability.group(1));
+            // System.out.println("10. Total current liabilities : "+liability.group(1));
+             dataArray[10] ="10. Total current liabilities : "+liability.group(1);
              
              final Matcher netBlock = netBlock_pattern.matcher(response);
              netBlock.find();
-             System.out.println("Net Block: "+netBlock.group(1));
+             //System.out.println("11. Net Block: "+netBlock.group(1));
+             dataArray[11] ="11. Net Block: "+netBlock.group(1);
              
              
 		 
