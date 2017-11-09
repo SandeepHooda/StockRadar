@@ -47,7 +47,7 @@ public class GetStockQuote {
 	private static void savePriceInDB(String exchange, String ticker, double price){
 		TickerDBData tickerDBData = null;
 		String key = StockPriceDAO.mlabKeySonu;
-		String historicalPrice = StockPriceDAO.getHistoricalPrice(exchange, ticker, key);
+		String historicalPrice = StockPriceDAO.getData(exchange, ticker, key);
 		if (StockPriceDAO.noCollection.equals(historicalPrice)){
 			tickerDBData = new TickerDBData();
 			tickerDBData.set_id(ticker);
@@ -153,7 +153,7 @@ public class GetStockQuote {
 	}
 	public static CurrentMarketPrice getCurrentMarkerPrice(CurrentMarketPrice ticker){
 		CurrentMarketPrice markerResponse = new  CurrentMarketPrice();
-		String historicalPrice = StockPriceDAO.getHistoricalPrice((ticker.getE().toLowerCase()), ticker.getT(), StockPriceDAO.mlabKeySonu);
+		String historicalPrice = StockPriceDAO.getData((ticker.getE().toLowerCase()), ticker.getT(), StockPriceDAO.mlabKeySonu);
 		TickerDBData tickerDBData = toTickerData( historicalPrice);
 		List<StockPrice> stockPrices = null;
 		if (tickerDBData != null){

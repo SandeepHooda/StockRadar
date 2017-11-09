@@ -28,9 +28,9 @@ import org.apache.http.util.EntityUtils;
 public class StockPriceDAO {
 	public static final String mlabKeySonu = "soblgT7uxiAE6RsBOGwI9ZuLmcCgcvh_";
 	public static final String noCollection = "";
-	public static String getHistoricalPrice(String exchange, String ticker,  String apiKey ){
-		exchange = exchange.toLowerCase();
-		String httpsURL = "https://api.mlab.com/api/1/databases/"+exchange+"/collections/"+ticker+"?apiKey="+apiKey;
+	public static String getData(String db, String collection,  String apiKey ){
+		db = db.toLowerCase();
+		String httpsURL = "https://api.mlab.com/api/1/databases/"+db+"/collections/"+collection+"?apiKey="+apiKey;
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		StringBuilder response = new StringBuilder();
 		 try {
