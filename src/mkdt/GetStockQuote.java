@@ -165,6 +165,7 @@ public class GetStockQuote {
 		}else {
 			markerResponse.setL_fix(stockPrices.get(0).getPrice());
 			markerResponse.setE(ticker.getE().toLowerCase());
+			markerResponse.setT(ticker.getT());
 		}
 		
 		
