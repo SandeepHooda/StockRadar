@@ -10,7 +10,7 @@ public class StockWorker implements Runnable {
 	@Override
 	public void run() {
 		
-		CurrentMarketPrice response = GetStockQuote.getCurrentMarkerPrice( request);
+		 GetStockQuote.getCurrentMarkerPrice( request);
 		//System.out.println(response.getT()+" response ="+response.getL_fix());
 		
 	}

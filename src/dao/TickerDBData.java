@@ -11,7 +11,7 @@ public class TickerDBData {
 	private double xirr30;
 	private double xirr182;
 	private double xirr365;
-	private List<StockPrice> stockPriceList = new ArrayList<>();
+	private List<StockPrice> stockPriceList = new ArrayList<StockPrice>();
 	public String get_id() {
 		return _id;
 	}

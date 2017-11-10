@@ -93,7 +93,7 @@ public class StockPriceDAO {
 			 }
 			 
 		    } catch (IOException e) {
-	        	
+	        	e.printStackTrace();
 	        }
 	}
 

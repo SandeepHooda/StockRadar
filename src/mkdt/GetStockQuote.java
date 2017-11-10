@@ -29,6 +29,9 @@ import dao.TickerDBData;
 
 public class GetStockQuote {
 	private static List<TickerDBData> nseTickersList = new ArrayList<TickerDBData>();
+	private static int savePoint = 10;
+	private static List<TickerDBData> nseTickersSaveList = new ArrayList<TickerDBData>(); 
+	private static float percentComplete =0;
 	private static float nseCount = 0;
 	private static float bseCount = 0;
 	public static float totalNSECount = 0;
@@ -44,51 +47,45 @@ public class GetStockQuote {
 		stockQuoteDateTime.setTimeZone(TimeZone.getTimeZone("IST"));
 	}
 	
-	private static void savePriceInDB(String exchange, String ticker, double price){
-		TickerDBData tickerDBData = null;
+	private static void savePriceInDB(CurrentMarketPrice markerResponse,  TickerDBData tickerDBData, boolean rowExistInDB){
+		
 		String key = StockPriceDAO.mlabKeySonu;
-		String historicalPrice = StockPriceDAO.getData(exchange, ticker, key);
-		if (StockPriceDAO.noCollection.equals(historicalPrice)){
-			tickerDBData = new TickerDBData();
-			tickerDBData.set_id(ticker);
-			StockPrice stockPrice = new StockPrice();
-			stockPrice.setPrice(price);
-			stockPrice.setDate(Integer.parseInt(yyyymmdd.format(new Date())));
-			tickerDBData.getStockPriceList().add(stockPrice);
-			calculateXirr(tickerDBData);
-			StockPriceDAO.insertUpdateData(exchange, ticker, dataStr(tickerDBData), key, false);
-			
-		}else {
-			tickerDBData = toTickerData( historicalPrice);
-			tickerDBData.set_id(ticker);
+	
+			tickerDBData.set_id(markerResponse.getT());
 			List<StockPrice> stockPrices = tickerDBData.getStockPriceList();
 			
-			if (stockPrices.get(0).getDate() < Integer.parseInt(yyyymmdd.format(new Date()))){
+			
 				StockPrice stockPrice = new StockPrice();
-				stockPrice.setPrice(price);
+				stockPrice.setPrice(markerResponse.getL_fix());
 				stockPrice.setDate(Integer.parseInt(yyyymmdd.format(new Date())));
 				stockPrices.add(0,stockPrice);
 				calculateXirr(tickerDBData);
-				StockPriceDAO.insertUpdateData(exchange, ticker, dataStr(tickerDBData), key, true);
-			}
+				StockPriceDAO.insertUpdateData(markerResponse.getE().toLowerCase(), markerResponse.getT(), dataStr(tickerDBData), key, rowExistInDB);
 			
-		}
+	
+	}
+	
+	private static void updateProgress(String exchange, TickerDBData tickerDBData){
 		
 		if ("NSE".equalsIgnoreCase(exchange)){
 			synchronized (nseTickersList) {
 				nseTickersList.add(tickerDBData);
-				/*if (nseTickersList.size() == 10){
-					String jsonData = dataStr(nseTickersList);
-					StockPriceDAO.insertUpdateData("nse-tickers-xirr", "nse-tickers-xirr", jsonData, StockPriceDAO.mlabKeySonu, true);
-				}*/
+				nseTickersSaveList.add(tickerDBData);
+				percentComplete = (nseCount/ totalNSECount *100);
+				if (percentComplete >= savePoint){
+					saveXirrListToDB();
+					savePoint += 10;
+					nseTickersSaveList = new ArrayList<TickerDBData>(); 
+					
+				}
+				
 			}
 			addToNSECount();
 		}else {
 			addToBSECount();
 		}
 		
-		System.out.printf("Progress NSE: %.2f \r",(nseCount/ totalNSECount *100));
-		//System.out.printf(" \r Progress NSE: %.2f "+nseCount+" BSE pregress %.2f "+ totalNSECount );
+		System.out.printf("Progress NSE: %.2f \r",percentComplete);
 	}
 	
 	private static void calculateXirr(TickerDBData tickerDBData ){
@@ -97,36 +94,41 @@ public class GetStockQuote {
 			double [] payments = new double[2];
 			Date [] dates = new Date[2];
 			List<StockPrice> stockPrices = tickerDBData.getStockPriceList();
-			payments[0] = stockPrices.get(0).getPrice() *-1;
+			payments[0] = stockPrices.get(0).getPrice() ;
 			dates[0] = yyyymmdd.parse(""+ stockPrices.get(0).getDate());
 			
 			int xiirDay = 5;
 			if (stockPrices.size() >=xiirDay){
 				payments[1] = stockPrices.get(xiirDay-1).getPrice() ;
+				payments[1] *=  -1;
 				dates[1] = yyyymmdd.parse(""+ stockPrices.get(xiirDay-1).getDate());
 				tickerDBData.setXirr5(XirrCalculatorService.Newtons_method(0.1, payments, dates));
 			}
 			xiirDay = 10;
 			if (stockPrices.size() >=xiirDay){
 				payments[1] = stockPrices.get(xiirDay-1).getPrice() ;
+				payments[1] *=  -1;
 				dates[1] = yyyymmdd.parse(""+ stockPrices.get(xiirDay-1).getDate());
 				tickerDBData.setXirr10(XirrCalculatorService.Newtons_method(0.1, payments, dates));
 			}
 			xiirDay = 30;
 			if (stockPrices.size() >=xiirDay){
 				payments[1] = stockPrices.get(xiirDay-1).getPrice() ;
+				payments[1] *=  -1;
 				dates[1] = yyyymmdd.parse(""+ stockPrices.get(xiirDay-1).getDate());
 				tickerDBData.setXirr30(XirrCalculatorService.Newtons_method(0.1, payments, dates));
 			}
 			xiirDay = 182;
 			if (stockPrices.size() >=xiirDay){
 				payments[1] = stockPrices.get(xiirDay-1).getPrice() ;
+				payments[1] *=  -1;
 				dates[1] = yyyymmdd.parse(""+ stockPrices.get(xiirDay-1).getDate());
 				tickerDBData.setXirr182(XirrCalculatorService.Newtons_method(0.1, payments, dates));
 			}
 			xiirDay = 365;
 			if (stockPrices.size() >=xiirDay){
 				payments[1] = stockPrices.get(xiirDay-1).getPrice() ;
+				payments[1] *=  -1;
 				dates[1] = yyyymmdd.parse(""+ stockPrices.get(xiirDay-1).getDate());
 				tickerDBData.setXirr365(XirrCalculatorService.Newtons_method(0.1, payments, dates));
 			}
@@ -151,21 +153,25 @@ public class GetStockQuote {
 		Gson  json = new Gson();
 		return  (TickerDBData)json.fromJson(jsonStr, new TypeToken<TickerDBData>() {}.getType());
 	}
-	public static CurrentMarketPrice getCurrentMarkerPrice(CurrentMarketPrice ticker){
-		CurrentMarketPrice markerResponse = new  CurrentMarketPrice();
+	public static void getCurrentMarkerPrice(CurrentMarketPrice ticker){
+		CurrentMarketPrice markerResponse =null;
 		String historicalPrice = StockPriceDAO.getData((ticker.getE().toLowerCase()), ticker.getT(), StockPriceDAO.mlabKeySonu);
-		TickerDBData tickerDBData = toTickerData( historicalPrice);
-		List<StockPrice> stockPrices = null;
-		if (tickerDBData != null){
-			stockPrices = tickerDBData.getStockPriceList();
-		}
+		TickerDBData tickerDBData  = null;
 		boolean priceAvailableInDb = true;
-		if (null == stockPrices || ( stockPrices.get(0).getDate() < Integer.parseInt(yyyymmdd.format(new Date()))) ){
-			priceAvailableInDb = false;	
+		boolean rowExistInDB = true;
+
+		if (StockPriceDAO.noCollection.equals(historicalPrice)){
+			tickerDBData = new TickerDBData();
+			tickerDBData.set_id(ticker.getT());
+			priceAvailableInDb = false;
+			rowExistInDB = false;
+			
 		}else {
-			markerResponse.setL_fix(stockPrices.get(0).getPrice());
-			markerResponse.setE(ticker.getE().toLowerCase());
-			markerResponse.setT(ticker.getT());
+			tickerDBData = toTickerData( historicalPrice);
+		}
+		
+		if (!rowExistInDB || ( tickerDBData.getStockPriceList().get(0).getDate() < Integer.parseInt(yyyymmdd.format(new Date()))) ){
+			priceAvailableInDb = false;	
 		}
 		
 		
@@ -301,15 +307,16 @@ public class GetStockQuote {
 			
 	
 			if (null!= markerResponse && markerResponse.getL_fix() > 0){
-				savePriceInDB(markerResponse.getE(), markerResponse.getT(), markerResponse.getL_fix());
+				savePriceInDB(markerResponse,tickerDBData, rowExistInDB);
 			}
+			updateProgress(ticker.getE().toUpperCase(), tickerDBData);
 			
 		
-		return markerResponse;
+		
 	}
 
 	public static void saveXirrListToDB(){
-		StockPriceDAO.insertUpdateData("nse-tickers-xirr", "nse-tickers-xirr", dataStr(nseTickersList), StockPriceDAO.mlabKeySonu, true);
+		StockPriceDAO.insertUpdateData("nse-tickers-xirr", "nse-tickers-xirr"+savePoint, dataStr(nseTickersSaveList), StockPriceDAO.mlabKeySonu, true);
 	}
 	public static synchronized void   addToNSECount(){
 		nseCount++;
