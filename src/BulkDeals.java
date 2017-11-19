@@ -20,6 +20,7 @@ import org.apache.http.util.EntityUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dao.StockPriceDAO;
+import hotStocks.HotStockDB;
 import hotStocks.HotStockVO;
 
 
@@ -39,7 +40,10 @@ public class BulkDeals {
 				stock.setHighProfile(true);
 			}
 		}
-		StockPriceDAO.insertUpdateData("hotstocks", ""+sdf.format(new Date()), dataStr(hotStocks), StockPriceDAO.mlabKeySonu, false);
+		HotStockDB hotStockDB = new HotStockDB();
+		hotStockDB.set_id(sdf.format(new Date()));
+		hotStockDB.setHotStocks(hotStocks);
+		StockPriceDAO.insertUpdateData("hotstocks", "hotstocks", dataStr(hotStockDB), StockPriceDAO.mlabKeySonu, false);
 	}
 
 	
@@ -230,9 +234,9 @@ public class BulkDeals {
 	       }
 	}
 	
-	private static String dataStr(List<HotStockVO> hotStocks){
+	private static String dataStr(HotStockDB hotStocks){
 		Gson  json = new Gson();
-		return  json.toJson(hotStocks, new TypeToken<List<HotStockVO>>() {}.getType());
+		return  json.toJson(hotStocks, new TypeToken<HotStockDB>() {}.getType());
 	}
 	
 }
