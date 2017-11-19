@@ -95,8 +95,14 @@ public class GetStockQuote {
 			Date [] dates = new Date[2];
 			List<StockPrice> stockPrices = tickerDBData.getStockPriceList();
 			payments[0] = stockPrices.get(0).getPrice() ;
-			dates[0] = yyyymmdd.parse(""+ stockPrices.get(0).getDate());
+			try{
+				dates[0] = yyyymmdd.parse(""+ stockPrices.get(0).getDate());
+			}catch(Exception e){
+				System.out.println(" could not parse date "+ stockPrices.get(0).getDate());
+				System.out.println(" Ticket  "+tickerDBData.get_id()+"  price "+payments[0]);
+			}
 			
+			tickerDBData.setCurrentMarketPrice(stockPrices.get(0).getPrice());
 			int xiirDay = 5;
 			if (stockPrices.size() >=xiirDay){
 				payments[1] = stockPrices.get(xiirDay-1).getPrice() ;

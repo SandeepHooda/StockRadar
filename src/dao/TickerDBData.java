@@ -11,6 +11,7 @@ public class TickerDBData {
 	private double xirr30;
 	private double xirr182;
 	private double xirr365;
+	private double currentMarketPrice;
 	private List<StockPrice> stockPriceList = new ArrayList<StockPrice>();
 	public String get_id() {
 		return _id;
@@ -54,6 +55,12 @@ public class TickerDBData {
 	}
 	public void setStockPriceList(List<StockPrice> stockPriceList) {
 		this.stockPriceList = stockPriceList;
+	}
+	public double getCurrentMarketPrice() {
+		return currentMarketPrice;
+	}
+	public void setCurrentMarketPrice(double currentMarketPrice) {
+		this.currentMarketPrice = currentMarketPrice;
 	}
 
 }

@@ -170,6 +170,8 @@ public static void balanceSheet( StockAnalysisVO stockAnalysisVO){
 	final Pattern liability_pattern = Pattern.compile("Total Current Liabilities</td><td class='GridDataR_alt'>(.+?)</td>");
 	final Pattern netBlock_pattern = Pattern.compile("Net Block </td><td class='GridDataR_alt'>(.+?)</td>");
 	
+	final Pattern marketCap_pattern = Pattern.compile("<td class=\"ReptDataL\" style=\"padding-left:3px;height:22px;border-bottom:solid 1px #C6D9E6\" width=\"130px\">(.+?)</td>");
+	
 	
 	try {
 		StringBuilder response = new StringBuilder();
@@ -189,6 +191,7 @@ public static void balanceSheet( StockAnalysisVO stockAnalysisVO){
              EntityUtils.consume(entity1);
              final Matcher data = find_pattern.matcher(response);
              final Matcher debt = debt_pattern.matcher(response);
+             final Matcher marketCap = marketCap_pattern.matcher(response);
              data.find();
              debt.find();
              String bookValue = debt.group(1);
@@ -198,6 +201,8 @@ public static void balanceSheet( StockAnalysisVO stockAnalysisVO){
              String totalDebt = debt.group(1);
              debt.find();
              String pe = debt.group(1);
+             marketCap.find();
+             String marketCapVal = marketCap.group(1);
              /*System.out.println("2. Total Shareholders Funds: "+data.group(1));
              System.out.println("3. Total Debt: "+totalDebt);
              System.out.println("4. BookValue: "+bookValue);
@@ -216,6 +221,7 @@ public static void balanceSheet( StockAnalysisVO stockAnalysisVO){
              stockAnalysisVO.setEps(Double.parseDouble(pe.substring(pe.lastIndexOf(";")+1).replaceAll(",", "")));
              stockAnalysisVO.setHigh52(Double.parseDouble(lowHigh.substring(0,lowHigh.indexOf(seperator)).replaceAll(",", "")));
              stockAnalysisVO.setLow52(Double.parseDouble(lowHigh.substring(lowHigh.lastIndexOf(";")+1).replaceAll(",", "")));
+             stockAnalysisVO.setMarketCap(Double.parseDouble(marketCapVal.replaceAll(",", "")));
              final Matcher asset = asset_pattern.matcher(response);
              asset.find();
              //System.out.println("9. Total current assets : "+asset.group(1));

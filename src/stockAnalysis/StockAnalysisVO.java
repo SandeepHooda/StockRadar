@@ -4,6 +4,7 @@ public class StockAnalysisVO {
 	private String _id, category;
 	
 	private double currentMarketPrice;
+	private double marketCap;
 	private double salesTurnOver;
 	private double netProfit1, netProfit2, netProfit3, netProfit4, netProfit5;
 	private double totalStockHoldersFund;
@@ -260,5 +261,12 @@ public class StockAnalysisVO {
 	public void setPreference(int preference) {
 		this.preference = preference;
 	}
+	public double getMarketCap() {
+		return marketCap;
+	}
+	public void setMarketCap(double marketCap) {
+		this.marketCap = marketCap;
+	}
+	
 
 }
