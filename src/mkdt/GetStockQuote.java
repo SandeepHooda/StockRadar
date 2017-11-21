@@ -98,6 +98,7 @@ public class GetStockQuote {
 			try{
 				dates[0] = yyyymmdd.parse(""+ stockPrices.get(0).getDate());
 			}catch(Exception e){
+				dates[0] = new Date();
 				System.out.println(" could not parse date "+ stockPrices.get(0).getDate());
 				System.out.println(" Ticket  "+tickerDBData.get_id()+"  price "+payments[0]);
 			}

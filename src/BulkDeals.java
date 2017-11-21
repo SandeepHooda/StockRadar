@@ -1,12 +1,17 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,8 +25,11 @@ import org.apache.http.util.EntityUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dao.StockPriceDAO;
+import file.NSE;
 import hotStocks.HotStockDB;
 import hotStocks.HotStockVO;
+import mkdt.CurrentMarketPrice;
+import mkdt.GetStockQuote;
 
 
 public class BulkDeals {
@@ -31,6 +39,12 @@ public class BulkDeals {
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
 	public static void main(String[] args) throws IOException {
 		
+		Calendar cal = new GregorianCalendar();
+		if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
+			System.out.println(" Today is exchange Holiday ");
+			return ;
+		}
+		checkRunPrequsite();
 		topInvestors = Files.readAllLines(Paths.get("C:/Users/shaurya/Documents/StocksScripts/TopInvestors.txt"));
 		getBSEUpperCircuit();
 		getNSEBulkDeals();
@@ -46,6 +60,21 @@ public class BulkDeals {
 		StockPriceDAO.insertUpdateData("hotstocks", "hotstocks", dataStr(hotStockDB), StockPriceDAO.mlabKeySonu, false);
 	}
 
+	private static void checkRunPrequsite(){
+		boolean internetAvailable = false;
+		while (!internetAvailable){
+			
+			try {
+				Thread.sleep(1000);
+				InetAddress Address = InetAddress.getByName("www.nseindia.com");
+				internetAvailable = Address.isReachable(1000);
+				internetAvailable = true;
+			} catch (Exception e) {
+				System.err.println(" Not able to connect to internet!!!");
+				
+			} 
+		}
+	}
 	
 	public static void getBSEUpperCircuit(){
 		String url = "http://www.bseindia.com/markets/equity/EQReports/mtw_uclc.aspx";
