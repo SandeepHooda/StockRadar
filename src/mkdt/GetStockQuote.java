@@ -29,10 +29,9 @@ import dao.TickerDBData;
 
 public class GetStockQuote {
 	private static List<TickerDBData> nseTickersList = new ArrayList<TickerDBData>();
-	private static int savePoint = 10;
-	private static List<TickerDBData> nseTickersSaveList = new ArrayList<TickerDBData>(); 
+	public static List<TickerDBData> nseTickersSaveList = new ArrayList<TickerDBData>(); 
 	private static float percentComplete =0;
-	private static float nseCount = 0;
+	public static float nseCount = 0;
 	private static float bseCount = 0;
 	public static float totalNSECount = 0;
 	public static float totalBSECount = 0;
@@ -47,7 +46,7 @@ public class GetStockQuote {
 		stockQuoteDateTime.setTimeZone(TimeZone.getTimeZone("IST"));
 	}
 	
-	private static void savePriceInDB(CurrentMarketPrice markerResponse,  TickerDBData tickerDBData, boolean rowExistInDB){
+	private static void savePriceInDB(CurrentMarketPrice markerResponse,  TickerDBData tickerDBData, boolean rowExistInDB, int counter){
 		
 		String key = StockPriceDAO.mlabKeySonu;
 	
@@ -60,24 +59,19 @@ public class GetStockQuote {
 				stockPrice.setDate(Integer.parseInt(yyyymmdd.format(new Date())));
 				stockPrices.add(0,stockPrice);
 				calculateXirr(tickerDBData);
-				StockPriceDAO.insertUpdateData(markerResponse.getE().toLowerCase(), markerResponse.getT(), dataStr(tickerDBData), key, rowExistInDB);
+				StockPriceDAO.insertUpdateData(markerResponse.getE().toLowerCase()+counter, markerResponse.getT(), dataStr(tickerDBData), key, rowExistInDB);
 			
 	
 	}
 	
-	private static void updateProgress(String exchange, TickerDBData tickerDBData){
+	private static void updateProgress(String exchange, TickerDBData tickerDBData, int counter){
 		
 		if ("NSE".equalsIgnoreCase(exchange)){
 			synchronized (nseTickersList) {
 				nseTickersList.add(tickerDBData);
 				nseTickersSaveList.add(tickerDBData);
 				percentComplete = (nseCount/ totalNSECount *100);
-				if (percentComplete >= savePoint){
-					saveXirrListToDB();
-					savePoint += 10;
-					nseTickersSaveList = new ArrayList<TickerDBData>(); 
-					
-				}
+				
 				
 			}
 			addToNSECount();
@@ -85,7 +79,7 @@ public class GetStockQuote {
 			addToBSECount();
 		}
 		
-		System.out.printf("Progress NSE: %.2f \r",percentComplete);
+		//System.out.printf(counter+" Progress NSE: %.2f \r",percentComplete);
 	}
 	
 	private static void calculateXirr(TickerDBData tickerDBData ){
@@ -99,7 +93,7 @@ public class GetStockQuote {
 				dates[0] = yyyymmdd.parse(""+ stockPrices.get(0).getDate());
 			}catch(Exception e){
 				dates[0] = new Date();
-				System.out.println(" could not parse date "+ stockPrices.get(0).getDate());
+				System.out.println(" could not parse date #"+ stockPrices.get(0).getDate()+"#");
 				System.out.println(" Ticket  "+tickerDBData.get_id()+"  price "+payments[0]);
 			}
 			
@@ -160,9 +154,9 @@ public class GetStockQuote {
 		Gson  json = new Gson();
 		return  (TickerDBData)json.fromJson(jsonStr, new TypeToken<TickerDBData>() {}.getType());
 	}
-	public static void getCurrentMarkerPrice(CurrentMarketPrice ticker){
+	public static void getCurrentMarkerPrice(CurrentMarketPrice ticker, int counter){
 		CurrentMarketPrice markerResponse =null;
-		String historicalPrice = StockPriceDAO.getData((ticker.getE().toLowerCase()), ticker.getT(), StockPriceDAO.mlabKeySonu);
+		String historicalPrice = StockPriceDAO.getData(ticker.getE().toLowerCase()+counter, ticker.getT(), StockPriceDAO.mlabKeySonu);
 		TickerDBData tickerDBData  = null;
 		boolean priceAvailableInDb = true;
 		boolean rowExistInDB = true;
@@ -314,16 +308,16 @@ public class GetStockQuote {
 			
 	
 			if (null!= markerResponse && markerResponse.getL_fix() > 0){
-				savePriceInDB(markerResponse,tickerDBData, rowExistInDB);
+				savePriceInDB(markerResponse,tickerDBData, rowExistInDB, counter);
 			}
-			updateProgress(ticker.getE().toUpperCase(), tickerDBData);
+			updateProgress(ticker.getE().toUpperCase(), tickerDBData, counter);
 			
 		
 		
 	}
 
-	public static void saveXirrListToDB(){
-		StockPriceDAO.insertUpdateData("nse-tickers-xirr", "nse-tickers-xirr"+savePoint, dataStr(nseTickersSaveList), StockPriceDAO.mlabKeySonu, true);
+	public static void saveXirrListToDB(int counter){
+		StockPriceDAO.insertUpdateData("nse-tickers-xirr", "nse-tickers-xirr"+counter, dataStr(nseTickersSaveList), StockPriceDAO.mlabKeySonu, true);
 	}
 	public static synchronized void   addToNSECount(){
 		nseCount++;

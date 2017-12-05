@@ -9,15 +9,15 @@ import mkdt.CurrentMarketPrice;
 public class BSE {
 
 	public static void main(String[] args) {
-		List<CurrentMarketPrice> nse = getNSEScripts();
+		List<CurrentMarketPrice> nse = getBSEScripts(10);
 		System.out.println(nse.get(0).getT());
 
 	}
 	
-	public static List<CurrentMarketPrice> getNSEScripts(){
+	public static List<CurrentMarketPrice> getBSEScripts(int counter){
 		System.out.println(" Please fix the data for RESURGENT INDIA FUND");
 		List<CurrentMarketPrice> nseStocks = new ArrayList<CurrentMarketPrice>();
-		List<String> allRecords = NSE.getAllData("C:/Users/shaurya/Documents/StocksScripts/bse.csv");
+		List<String> allRecords = NSE.getAllData("C:/Users/shaurya/Documents/StocksScripts//bse/bse"+counter+".csv",counter);
 		allRecords.remove(0);
 		for (String aRecord: allRecords){
 			String[] stockData = aRecord.split(",");

@@ -2,6 +2,7 @@
 
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -12,6 +13,7 @@ import mkdt.StockWorker;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import dao.TickerDBData;
 import file.BSE;
 import file.NSE;
 public class Start {
@@ -24,16 +26,27 @@ public class Start {
 			System.out.println(" Today is exchange Holiday ");
 			return ;
 		}
+		if (cal.get(Calendar.HOUR_OF_DAY) < 16){
+			System.out.println(" Will run after 4 PM. Time is "+cal.get(Calendar.HOUR_OF_DAY) );
+			return ;
+		}
 		//https://www.nseindia.com/archives/nsccl/var/C_VAR1_30102017_1.DAT
 	    //http://www.bseindia.com/corporates/List_Scrips.aspx
+		for (int counter=10 ; counter<=110; counter+=10){
+			
 		
 		ExecutorService executor = Executors.newFixedThreadPool(5);
 		
-		List<CurrentMarketPrice> tickers =  NSE.getNSEScripts();
+		List<CurrentMarketPrice> tickers =  NSE.getNSEScripts(counter);
+		/*CurrentMarketPrice mp = new CurrentMarketPrice();
+		mp.setE("NSE");
+		mp.setT("MOTHERSUMI");
+		tickers.add(mp);*/
 		GetStockQuote.totalNSECount = tickers.size();
 		//tickers.addAll(BSE.getNSEScripts());
 		GetStockQuote.totalBSECount = tickers.size() - GetStockQuote.totalNSECount;
 		boolean internetAvailable = false;
+		
 		while (!internetAvailable){
 			
 			try {
@@ -57,18 +70,21 @@ public class Start {
 		
 		
 		for (CurrentMarketPrice ticker: tickers ) {
-            Runnable worker = new StockWorker(ticker);
+            Runnable worker = new StockWorker(ticker,counter);
             executor.execute(worker);
           }
         executor.shutdown();
         while (!executor.isTerminated()) {
         }
-        GetStockQuote.saveXirrListToDB();
-        System.out.println("Saved xirr data to nse-tickers-xirr "+GetStockQuote.getNSECount());
-        System.out.println(" BSE finished in Minutes "+((System.currentTimeMillis()- GetStockQuote.bseStartTime )/60000));
-        System.out.println("NSE scripts updated "+GetStockQuote.getNSECount());
-        System.out.println("BSE scripts updated "+GetStockQuote.getBSECount());
-		
+        GetStockQuote.saveXirrListToDB(counter);
+        System.out.println(counter+" Saved xirr data to nse-tickers-xirr "+GetStockQuote.getNSECount());
+        
+        GetStockQuote.nseTickersSaveList =new ArrayList<TickerDBData>();
+        
+        GetStockQuote.nseCount = 0;
+       
+       
+		}
 
 	}
 
