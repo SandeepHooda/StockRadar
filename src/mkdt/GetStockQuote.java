@@ -79,7 +79,7 @@ public class GetStockQuote {
 			addToBSECount();
 		}
 		
-		//System.out.printf(counter+" Progress NSE: %.2f \r",percentComplete);
+		System.out.printf(counter+" Progress NSE: %.2f \r",percentComplete);
 	}
 	
 	private static void calculateXirr(TickerDBData tickerDBData ){

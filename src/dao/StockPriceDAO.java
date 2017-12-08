@@ -3,14 +3,7 @@ package dao;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-
 import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -25,12 +18,19 @@ import org.apache.http.util.EntityUtils;
 
 
 
+
 public class StockPriceDAO {
 	public static final String mlabKeySonu = "soblgT7uxiAE6RsBOGwI9ZuLmcCgcvh_";
 	public static final String noCollection = "";
-	public static String getData(String db, String collection,  String apiKey ){
-		db = db.toLowerCase();
-		String httpsURL = "https://api.mlab.com/api/1/databases/"+db+"/collections/"+collection+"?apiKey="+apiKey;
+	
+	public static String getADocument(String dbName, String collection,  String documentKey,String mlabApiKey){
+		String httpsURL  = null;
+		if (null != documentKey){
+			httpsURL = "https://api.mlab.com/api/1/databases/"+dbName+"/collections/"+collection+"?apiKey="+mlabApiKey+"&q=%7B%22_id%22:%22"+documentKey+"%22%7D";
+		}else {
+			httpsURL = "https://api.mlab.com/api/1/databases/"+dbName+"/collections/"+collection+"?apiKey="+mlabApiKey;
+		}
+		
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		StringBuilder response = new StringBuilder();
 		 try {
@@ -69,8 +69,10 @@ public class StockPriceDAO {
 		 return responseStr;
 		
 		
-		
-		
+	}
+	public static String getData(String db, String collection,  String apiKey ){
+		db = db.toLowerCase();
+		return getADocument(db,collection,null,apiKey);
 	}
 	
 	
