@@ -50,7 +50,11 @@ public class XirrCalculatorService {
 	        while (err > tol) {
 	            x1 = x0 - total_f_xirr(payments, days, x0) / total_df_xirr(payments, days, x0);
 	            err = Math.abs(x1 - x0);
+	            
 	            x0 = x1;
+	            if (x1 > 1000000){
+	            	break;
+	            }
 	        }
             double xirr = x0 *100;
             if (Double.isNaN(xirr)){
