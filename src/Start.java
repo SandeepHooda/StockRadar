@@ -15,7 +15,7 @@ import mkdt.GetStockQuote;
 import mkdt.StockWorker;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+import java.util.concurrent.TimeUnit;
 
 import com.PriceChart.DBPriceData;
 import com.PriceChart.DataSets;
@@ -46,8 +46,8 @@ public class Start {
 		}
 		//https://www.nseindia.com/archives/nsccl/var/C_VAR1_30102017_1.DAT
 	    //http://www.bseindia.com/corporates/List_Scrips.aspx
-		for (int counter=10 ; counter<=110; counter+=10){
-			
+		//for (int counter=10 ; counter<=110; counter+=10){
+		for (int counter=60 ; counter<=60; counter+=10){	
 		
 		ExecutorService executor = Executors.newFixedThreadPool(5);
 		
@@ -88,9 +88,11 @@ public class Start {
             executor.execute(worker);
           }
         executor.shutdown();
+       
         while (!executor.isTerminated()) {
         }
-        GetStockQuote.saveXirrListToDB(counter);
+        System.out.println(" Wait for be to update the DB");
+       GetStockQuote.saveXirrListToDB(counter);
         System.out.println(counter+" Saved xirr data to nse-tickers-xirr "+GetStockQuote.getNSECount());
         
         GetStockQuote.nseTickersSaveList =new ArrayList<TickerDBData>();
