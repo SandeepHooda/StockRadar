@@ -163,6 +163,9 @@ public class Start {
 				scanner.nextLine();
 			}
 		}
+		System.out.println(" All done ");
+		Scanner scanner = new Scanner(System.in);
+		scanner.nextLine();
 	}
 	
 private static PriceVO polulatePriceVO(String dbDataJson,int maxDays, String ticker , String bordercolor){
