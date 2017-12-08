@@ -46,8 +46,8 @@ public class Start {
 		}
 		//https://www.nseindia.com/archives/nsccl/var/C_VAR1_30102017_1.DAT
 	    //http://www.bseindia.com/corporates/List_Scrips.aspx
-		//for (int counter=10 ; counter<=110; counter+=10){
-		for (int counter=60 ; counter<=60; counter+=10){	
+		for (int counter=10 ; counter<=110; counter+=10){
+		//for (int counter=60 ; counter<=60; counter+=10){	
 		
 		ExecutorService executor = Executors.newFixedThreadPool(5);
 		
