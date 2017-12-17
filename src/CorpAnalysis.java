@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,40 +21,223 @@ import stockAnalysis.StockAnalysisVO;
 
 public class CorpAnalysis {
 	private static final String sector_Auto = "Automobile";
+	private static final String sector_Finance = "Finance";
+	private static final String sector_HouseConstruction = "HouseConstruction";
+	private static final String sector_Infra = "Infra";
+	private static final String sector_Oil = "Oil";
+	private static final String sector_Multi = "Multi";
+	private static final String sector_FMCG = "FMCG";
+	private static final String sector_Agro = "Agro";
+	private static final String sector_Misc = "Misc";
 	private static final String sector_Chemicals = "Chemicals";
-	private static final String sector_Construction = "Construction";
+	private static final String sector_Textile = "Textiles";
+	private static final String sector_Electricals = "Electricals";
+	private static final String sector_ConsumerElectronics = "ConsumerElectronic";
+	private static final String sector_Fashion = "Fashion";
+	private static final String sector_Plastic = "Plastic";
 	private static List<StockAnalysisVO> stocksForAnalysis = new ArrayList<StockAnalysisVO>();// {,};
 	private static void addStocksForAnalysis(){
 		
 		StockAnalysisVO stock = new StockAnalysisVO();
-		stock.set_id("DCM_Shriram_Ltd/2337");
-		stock.setCategory(sector_Chemicals);
-		stocksForAnalysis.add(stock);
-		
-		stock = new StockAnalysisVO();
-		stock.set_id("Maruti_Suzuki_India_Ltd/5496");
+		stock.set_id("marutisuzukiindia/","/MS24#MS24");
 		stock.setCategory(sector_Auto);
+		stock.setBorderColor("#000080");
 		stocksForAnalysis.add(stock);
 		
 		stock = new StockAnalysisVO();
-		stock.set_id("Dilip_Buildcon_Ltd/36662");
-		stock.setCategory(sector_Construction);
+		stock.set_id("muthootfinance/","/MF10#MF10");
+		stock.setCategory(sector_Finance);
+		stock.setBorderColor("#cbc0c0");
 		stocksForAnalysis.add(stock);
 		
 		stock = new StockAnalysisVO();
-		stock.set_id("NCC_Ltd/2598");
-		stock.setCategory(sector_Construction);
+		stock.set_id("cerasanitaryware/","/CS18#CS18");
+		stock.setCategory(sector_HouseConstruction);
+		stock.setBorderColor("#cb5040");
 		stocksForAnalysis.add(stock);
 		
 		stock = new StockAnalysisVO();
-		stock.set_id("Ashoka_Buildcon_Ltd/25513");
-		stock.setCategory(sector_Construction);
+		stock.set_id("actionconstructionequipment/","/ACE3#ACE3");
+		stock.setCategory(sector_Infra);
+		stock.setBorderColor("#800080");
 		stocksForAnalysis.add(stock);
 		
 		stock = new StockAnalysisVO();
-		stock.set_id("Prakash_Constrowell_Ltd/41136");
-		stock.setCategory(sector_Construction);
+		stock.set_id("alphageoindia/","/AI10#AI10");
+		stock.setCategory(sector_Oil);
+		stock.setBorderColor("#FF00FF");
 		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("ashokleyland/","/AL#AL");
+		stock.setCategory(sector_Auto);
+		stock.setBorderColor("#00FF00");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("bharatforge/","/BF03#BF03");
+		stock.setCategory(sector_Multi);
+		stock.setBorderColor("#008080");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("britanniaindustries/","/BI#BI");
+		stock.setCategory(sector_FMCG);
+		stock.setBorderColor("#00FFFF");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("aplapollotubes/","/BT09#BT09I");
+		stock.setCategory(sector_HouseConstruction);
+		stock.setBorderColor("#0000FF");
+		stocksForAnalysis.add(stock);
+		
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("avantifeeds/","/AF21#AF21");
+		stock.setCategory(sector_Agro);
+		stock.setBorderColor("#008000");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("controlprint/","/CP11#CP11");
+		stock.setCategory(sector_Misc);
+		stock.setBorderColor("#808000");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("dilipbuildcon/","/DB04#DB04");
+		stock.setCategory(sector_Infra);
+		stock.setBorderColor("#FFFF00");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("dcmshriram/","/DCM02#DCM02");
+		stock.setCategory(sector_Chemicals);
+		stock.setBorderColor("#FFA500");
+		stocksForAnalysis.add(stock);
+		
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("filatexindia/","/FI06#FI06");
+		stock.setCategory(sector_Textile);
+		stock.setBorderColor("#FF0000");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("finolexcables/","/FC01#FC01");
+		stock.setCategory(sector_Electricals);
+		stock.setBorderColor("#DEB887");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("gayatriprojects/","/GP10#GP10");
+		stock.setCategory(sector_Infra);
+		stock.setBorderColor("#5F9EA0");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("gilletteindia/","/GI22#GI22");
+		stock.setCategory(sector_FMCG);
+		stock.setBorderColor("#D2691E");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("godrejindustries/","/GI23#GI23");
+		stock.setCategory(sector_FMCG);
+		stock.setBorderColor("#FF7F50");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("havellsindia/","/HI01#HI01");
+		stock.setCategory(sector_Electricals);
+		stock.setBorderColor("#B8860B");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("heromotocorp/","/HHM#HHM");
+		stock.setCategory(sector_Auto);
+		stock.setBorderColor("#006400");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("tvsmotorcompany/","/TVS#TVS");
+		stock.setCategory(sector_Auto);
+		stock.setBorderColor("#9932CC");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("ifbindustries/","/IFB02#IFB02");
+		stock.setCategory(sector_ConsumerElectronics);
+		stock.setBorderColor("#FFD700");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("itdcementationindia/","/ITD03#ITD03");
+		stock.setCategory(sector_HouseConstruction);
+		stock.setBorderColor("#DAA520");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("kansainerolacpaints/","/KNP#KNP");
+		stock.setCategory(sector_HouseConstruction);
+		stock.setBorderColor("#CD5C5C");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("lumaxindustries/","/LI05#LI05");
+		stock.setCategory(sector_Auto);
+		stock.setBorderColor("#");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("meghmaniorganics/","/MO04#MO04");
+		stock.setCategory(sector_Agro);
+		stock.setBorderColor("#F0E68C");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("mothersonsumisystems/","/MSS01#MSS01");
+		stock.setCategory(sector_Auto);
+		stock.setBorderColor("#E6E6FA");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("proctergamblehygienehealthcare/","/PGH#PGH");
+		stock.setCategory(sector_FMCG);
+		stock.setBorderColor("#FFF0F5");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("somanyceramics/","/SC49#SC49");
+		stock.setCategory(sector_HouseConstruction);
+		stock.setBorderColor("#FFFACD");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("titancompany/","/TI01#TI01");
+		stock.setCategory(sector_Fashion);
+		stock.setBorderColor("#6B8E23");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("vguardindustries/","/VI02#VI02");
+		stock.setCategory(sector_Electricals);
+		stock.setBorderColor("#CD853F");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("vipindustries/","/VIP#VIP");
+		stock.setCategory(sector_Plastic);
+		stock.setBorderColor("#FA8072");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
+		stock.set_id("whirlpoolindia/","/WI#WI");
+		stock.setCategory(sector_ConsumerElectronics);
+		stock.setBorderColor("#F5DEB3");
+		stocksForAnalysis.add(stock);
+		
 		
 		
 	}
@@ -74,56 +258,23 @@ public class CorpAnalysis {
 					break;
 				}
 			}
-			getCurrentMarketPrice(stockAnalysisVO);
-			pl(stockAnalysisVO);
-			balanceSheet( stockAnalysisVO);
-			/*for (int i=1;i<12;i++){
-				System.out.println(dataArray[i]);
-			}*/
-			stockAnalysisVO.setCalculatedFields();
+			
+			ratios(stockAnalysisVO);
+			QuaterResults(stockAnalysisVO);
 			analysisList.add(stockAnalysisVO);
 		}
 		
-		
 		strData = json.toJson(analysisList, new TypeToken<List<StockAnalysisVO>>() {}.getType());
-		
 		new StockPriceDAO().insertUpdateData("corp-analysis", "corp-analysis", strData, StockPriceDAO.mlabKeySonu, true);
 	}
 
-public static void getCurrentMarketPrice( StockAnalysisVO stockAnalysisVO){
-	String url = "http://www.equityintelligence.com/CorporateInfo/Detailed-Quotes/"+stockAnalysisVO.get_id();
-	final  Pattern find_pattern = Pattern.compile("<tr><td class=\"bbltxt\" align=\"right\"><b>(.+?)</b></td></tr>");
-	try {
-		StringBuilder response = new StringBuilder();
-		 CloseableHttpClient client = HttpClients.createDefault();
-		 
-		
-		 
-			 HttpGet httpGet = new HttpGet(url);
-			 CloseableHttpResponse response1 = client.execute(httpGet);
-			 HttpEntity entity1 = response1.getEntity();
-             BufferedReader br = new BufferedReader(new InputStreamReader(entity1.getContent()));
-             String line = "";
-             
-             while ((line = br.readLine())!= null) {
-             	response.append(line);
-             }
-             EntityUtils.consume(entity1);
-             final Matcher data = find_pattern.matcher(response);
-             data.find();
-             //System.out.println("5. CMP: "+data.group(1));
-             dataArray[5] = "5. CMP: "+data.group(1);
-             stockAnalysisVO.setCurrentMarketPrice(Double.parseDouble(data.group(1).replaceAll(",", "")));
-		 
-	    } catch (IOException e) {
-       	
-       }
-}
+
 	
-public static void pl( StockAnalysisVO stockAnalysisVO){
-	String url = "http://www.equityintelligence.com/CorporateInfo/ProfitandLoss/"+stockAnalysisVO.get_id();
-	final  Pattern find_pattern = Pattern.compile("Sales Turnover  </td><td  class='GridDataR_alt bbp brp'>(.+?)</td><td");
-	final  Pattern profit_pattern = Pattern.compile("Reported Net Profit</td><td  class='GridDataR_alt bbp brp'>(.+?)</td><td  class='GridDataR bbp brp'>(.+?)</td><td  class='GridDataR_alt bbp brp'>(.+?)</td><td  class='GridDataR bbp brp'>(.+?)</td><td  class='GridDataR_alt bbp brp'>(.+?)</td>");
+public static void QuaterResults( StockAnalysisVO stockAnalysisVODB){
+	String url = "http://www.moneycontrol.com/financials/"+
+          stockAnalysisVODB.getCompanyName()+stockAnalysisVODB.getMoneyControlResources()[1]+stockAnalysisVODB.getCompanyCode();
+	final  Pattern find_pattern = Pattern.compile("<td align=\"right\" class=\"det\">(.+?)</td>");
+	
 
 	try {
 		StringBuilder response = new StringBuilder();
@@ -136,43 +287,100 @@ public static void pl( StockAnalysisVO stockAnalysisVO){
 			 HttpEntity entity1 = response1.getEntity();
              BufferedReader br = new BufferedReader(new InputStreamReader(entity1.getContent()));
              String line = "";
+            List<Double> revenueList = new ArrayList<Double>();
+            List<Double> PBDITList = new ArrayList<Double>();
+ 
+             boolean captureRevenue = false;
+             boolean capturePBDIT = false;
+         
              
              while ((line = br.readLine())!= null) {
              	response.append(line);
+             	
+             	//Flags turn on to caputures figures
+             	if (line.indexOf("</tr>")>= 0){
+             		captureRevenue = false;
+             		capturePBDIT = false;
+             	
+             	}
+             	
+             	//Actual data capture
+             	
+             	if (captureRevenue){
+             		if (line != null && line.indexOf("<td align=\"right\" class=\"det\"") >=0){
+             			final Matcher data = find_pattern.matcher(line);
+                        data.find();
+                        System.out.println(data.group(1));
+                        revenueList.add( Double.parseDouble( data.group(1).replaceAll(",", "")));
+                      
+             		}
+             		
+             	}else
+             	if (capturePBDIT){
+             		if (line != null && line.indexOf("<td align=\"right\" class=\"det\"") >=0){
+             			final Matcher data = find_pattern.matcher(line);
+                        data.find();
+                        System.out.println(data.group(1));
+                        PBDITList.add( Double.parseDouble( data.group(1).replaceAll(",", "")));
+                      
+             		}
+             		
+             	}
+             	
+             	
+             	//Flags turn on to caputures figures
+             	if (line.indexOf("Total Income From Operations")>= 0){
+             		captureRevenue = true;
+             	}else
+             	if (line.indexOf("P/L Before Other Inc. , Int., Excpt. Items & Tax")>= 0){
+             		capturePBDIT = true;
+             	}
              }
              EntityUtils.consume(entity1);
-             final Matcher data = find_pattern.matcher(response);
-             data.find();
-             final Matcher profit = profit_pattern.matcher(response);
-             profit.find();
-            
-             //System.out.println("1. Sales turn over: "+data.group(1));
-             //System.out.println("8. Net profit: "+profit.group(1)+" "+profit.group(2)+" "+profit.group(3)+" "+profit.group(4)+" "+profit.group(5));
-             dataArray[1] = "1. Sales turn over: "+data.group(1);
-             dataArray[8] = "8. Net profit: "+profit.group(1)+" "+profit.group(2)+" "+profit.group(3)+" "+profit.group(4)+" "+profit.group(5);
-             stockAnalysisVO.setSalesTurnOver(Double.parseDouble(data.group(1).replaceAll(",", "")));
-             stockAnalysisVO.setNetProfit1(Double.parseDouble(profit.group(1).replaceAll(",", "")));
-             stockAnalysisVO.setNetProfit2(Double.parseDouble(profit.group(2).replaceAll(",", "")));
-             stockAnalysisVO.setNetProfit3(Double.parseDouble(profit.group(3).replaceAll(",", "")));
-             stockAnalysisVO.setNetProfit4(Double.parseDouble(profit.group(4).replaceAll(",", "")));
-             stockAnalysisVO.setNetProfit5(Double.parseDouble(profit.group(5).replaceAll(",", "")));
+             
+             
+             populateQuaterlyResults(stockAnalysisVODB,  revenueList,PBDITList);  
+             System.out.println(" Done ");
 		 
 	    } catch (IOException e) {
        	
        }
 }
 
-public static void balanceSheet( StockAnalysisVO stockAnalysisVO){
-	String url = "http://www.equityintelligence.com/CorporateInfo/BalanceSheet/"+stockAnalysisVO.get_id();
-	final  Pattern find_pattern = Pattern.compile("Total Shareholders Funds</td><td class='GridDataR_alt'>(.+?)</td><td");
-	final Pattern debt_pattern = Pattern.compile("<td class=\"ReptDataL\" style=\"padding-left:3px;height:22px;border-bottom:solid 1px #C6D9E6\">(.+?)</td>");
-	final Pattern asset_pattern = Pattern.compile("Total Current Assets</td><td class='GridDataR_alt'>(.+?)</td>");
-	final Pattern liability_pattern = Pattern.compile("Total Current Liabilities</td><td class='GridDataR_alt'>(.+?)</td>");
-	final Pattern netBlock_pattern = Pattern.compile("Net Block </td><td class='GridDataR_alt'>(.+?)</td>");
+private static void populateQuaterlyResults(StockAnalysisVO stockAnalysisVODB, List<Double> revenueList, List<Double> PBDITList){
+	Collections.reverse(revenueList);
+	Collections.reverse(PBDITList);
+	stockAnalysisVODB.setQuaterlyRevenueOp(revenueList);
+	stockAnalysisVODB.setQuaterlyPBDIT(PBDITList);
+	stockAnalysisVODB.setQuaterlyPBDITMargin(new ArrayList<Double>());
+	for (int i=0;i<revenueList.size();i++){
+		stockAnalysisVODB.getQuaterlyPBDITMargin().add(stockAnalysisVODB.getQuaterlyPBDIT().get(i)/stockAnalysisVODB.getQuaterlyRevenueOp().get(i)*100);
+	}
 	
-	final Pattern marketCap_pattern = Pattern.compile("<td class=\"ReptDataL\" style=\"padding-left:3px;height:22px;border-bottom:solid 1px #C6D9E6\" width=\"130px\">(.+?)</td>");
+	//Now set QoQ percentage chart data;
+			for (Double val: stockAnalysisVODB.getQuaterlyRevenueOp()){
+				Double baseVal = stockAnalysisVODB.getQuaterlyRevenueOp().get(0);
+				stockAnalysisVODB.getQuaterlyRevenueOpQoQ().add((val-baseVal)/baseVal*100);
+			}
+			for (Double val: stockAnalysisVODB.getQuaterlyPBDIT()){
+				Double baseVal = stockAnalysisVODB.getQuaterlyPBDIT().get(0);
+				stockAnalysisVODB.getQuaterlyPBDITQoQ().add((val-baseVal)/baseVal*100);
+			}
+			for (Double val: stockAnalysisVODB.getQuaterlyPBDITMargin()){
+				Double baseVal = stockAnalysisVODB.getQuaterlyPBDITMargin().get(0);
+				stockAnalysisVODB.getQuaterlyPBDITMarginQoQ().add((val-baseVal)/baseVal*100);
+			}
 	
+}
+
+public static void ratios( StockAnalysisVO stockAnalysisVODB){
+	String url = "http://www.moneycontrol.com/financials/"+
+          stockAnalysisVODB.getCompanyName()+stockAnalysisVODB.getMoneyControlResources()[0]+stockAnalysisVODB.getCompanyCode();
+	final  Pattern find_pattern = Pattern.compile("<td align=\"right\" class=\"det\">(.+?)</td>");
+	final  Pattern find_year_pattern = Pattern.compile("<td align=\"right\" class=\"detb\">(.+?)</td>");
+	final String findYearStr = "<td colspan=\"1\" class=\"detb\" width=\"40%\"></td>";
 	
+	;
 	try {
 		StringBuilder response = new StringBuilder();
 		 CloseableHttpClient client = HttpClients.createDefault();
@@ -184,65 +392,130 @@ public static void balanceSheet( StockAnalysisVO stockAnalysisVO){
 			 HttpEntity entity1 = response1.getEntity();
              BufferedReader br = new BufferedReader(new InputStreamReader(entity1.getContent()));
              String line = "";
-             
+            List<Double> revenueList = new ArrayList<Double>();
+            List<Double> PBDITList = new ArrayList<Double>();
+            List<Double> PBDITMarginList = new ArrayList<Double>();
+             boolean captureRevenue = false;
+             boolean capturePBDIT = false;
+             boolean capturePBDITMargin = false;
+             boolean find_year = false;
+             int capturedYearMax = 0;int capturedYearMin=100;
              while ((line = br.readLine())!= null) {
              	response.append(line);
+             	
+             	//Flags turn on to caputures figures
+             	if (line.indexOf("</tr>")>= 0){
+             		captureRevenue = false;
+             		capturePBDIT = false;
+             		capturePBDITMargin = false;
+             		find_year = false;
+             	}
+             	
+             	//Actual data capture
+             	if (find_year){
+             		if (line != null && line.indexOf("<td align=\"right\" class=\"detb\"") >=0){
+             			final Matcher data = find_year_pattern.matcher(line);
+                        data.find();
+                        int year = Integer.parseInt(data.group(1).replaceAll("[^\\d.]", ""));
+                        System.out.println(year);
+                        if (year > capturedYearMax){
+                        	capturedYearMax = year;
+                        }
+                        if (year < capturedYearMin){
+                        	capturedYearMin = year;
+                        }
+                        //revenueList.add( Double.parseDouble( data.group(1).replaceAll(",", "")));
+                      
+             		}
+             		
+             	}else
+             	if (captureRevenue){
+             		if (line != null && line.indexOf("<td align=\"right\" class=\"det\"") >=0){
+             			final Matcher data = find_pattern.matcher(line);
+                        data.find();
+                        System.out.println(data.group(1));
+                        revenueList.add( Double.parseDouble( data.group(1).replaceAll(",", "")));
+                      
+             		}
+             		
+             	}else
+             	if (capturePBDIT){
+             		if (line != null && line.indexOf("<td align=\"right\" class=\"det\"") >=0){
+             			final Matcher data = find_pattern.matcher(line);
+                        data.find();
+                        System.out.println(data.group(1));
+                        PBDITList.add( Double.parseDouble( data.group(1).replaceAll(",", "")));
+                      
+             		}
+             		
+             	}else
+             	if (capturePBDITMargin){
+             		if (line != null && line.indexOf("<td align=\"right\" class=\"det\"") >=0){
+             			final Matcher data = find_pattern.matcher(line);
+                        data.find();
+                        System.out.println(data.group(1));
+                        PBDITMarginList.add( Double.parseDouble( data.group(1).replaceAll(",", "")));
+                      
+             		}
+             		
+             	}
+             	
+             	
+             	//Flags turn on to caputures figures
+             	if (line.indexOf("Revenue from Operations/Share (Rs.)")>= 0){
+             		captureRevenue = true;
+             	}else
+             	if (line.indexOf("PBDIT/Share (Rs.)")>= 0){
+             		capturePBDIT = true;
+             	}else
+             	if (line.indexOf("PBDIT Margin")>= 0){
+             		capturePBDITMargin = true;
+             	}else
+             	if (line.indexOf(findYearStr)>= 0){
+             		find_year = true;
+             	}
              }
              EntityUtils.consume(entity1);
-             final Matcher data = find_pattern.matcher(response);
-             final Matcher debt = debt_pattern.matcher(response);
-             final Matcher marketCap = marketCap_pattern.matcher(response);
-             data.find();
-             debt.find();
-             String bookValue = debt.group(1);
-             debt.find();
-             String lowHigh = debt.group(1);
-             debt.find();
-             String totalDebt = debt.group(1);
-             debt.find();
-             String pe = debt.group(1);
-             marketCap.find();
-             String marketCapVal = marketCap.group(1);
-             /*System.out.println("2. Total Shareholders Funds: "+data.group(1));
-             System.out.println("3. Total Debt: "+totalDebt);
-             System.out.println("4. BookValue: "+bookValue);
-             System.out.println("6. PE & EPS: "+pe);
-             System.out.println("7. 52 week  high low : "+lowHigh);*/
-             dataArray[2] ="2. Total Shareholders Funds: "+data.group(1);
-             dataArray[3] ="3. Total Debt: "+totalDebt;
-             dataArray[4] ="4. BookValue: "+bookValue;
-             dataArray[6] ="6. PE & EPS: "+pe;
-             dataArray[7] ="7. 52 week  high low : "+lowHigh;
-             stockAnalysisVO.setTotalStockHoldersFund(Double.parseDouble(data.group(1).replaceAll(",", "")));
-             stockAnalysisVO.setTotalDebt(Double.parseDouble(totalDebt.replaceAll(",", "")));
-             stockAnalysisVO.setBookValue(Double.parseDouble(bookValue.replaceAll(",", "")));
-             String seperator = "&nbsp;|&nbsp;";
-             stockAnalysisVO.setPe(Double.parseDouble(pe.substring(0,pe.indexOf(seperator)).replaceAll(",", "")));
-             stockAnalysisVO.setEps(Double.parseDouble(pe.substring(pe.lastIndexOf(";")+1).replaceAll(",", "")));
-             stockAnalysisVO.setHigh52(Double.parseDouble(lowHigh.substring(0,lowHigh.indexOf(seperator)).replaceAll(",", "")));
-             stockAnalysisVO.setLow52(Double.parseDouble(lowHigh.substring(lowHigh.lastIndexOf(";")+1).replaceAll(",", "")));
-             stockAnalysisVO.setMarketCap(Double.parseDouble(marketCapVal.replaceAll(",", "")));
-             final Matcher asset = asset_pattern.matcher(response);
-             asset.find();
-             //System.out.println("9. Total current assets : "+asset.group(1));
-             dataArray[9] ="9. Total current assets : "+asset.group(1);
-             stockAnalysisVO.setCurrentAssets(Double.parseDouble(asset.group(1).replaceAll(",", "")));
-             final Matcher liability = liability_pattern.matcher(response);
-             liability.find();
-            // System.out.println("10. Total current liabilities : "+liability.group(1));
-             dataArray[10] ="10. Total current liabilities : "+liability.group(1);
-             stockAnalysisVO.setCurrentLiabilities(Double.parseDouble(liability.group(1).replaceAll(",", "")));
              
-             final Matcher netBlock = netBlock_pattern.matcher(response);
-             netBlock.find();
-             //System.out.println("11. Net Block: "+netBlock.group(1));
-             dataArray[11] ="11. Net Block: "+netBlock.group(1);
-             stockAnalysisVO.setNetBlock(Double.parseDouble(netBlock.group(1).replaceAll(",", "")));
              
+             appendCapturedData(stockAnalysisVODB, capturedYearMax,  capturedYearMin,  revenueList,PBDITList, PBDITMarginList);  
+             System.out.println(" Done ");
 		 
 	    } catch (IOException e) {
        	
        }
+}
+
+private static void appendCapturedData(StockAnalysisVO stockAnalysisVODB, int capturedYearMax, int capturedYearMin, List<Double> revenueList, List<Double> PBDITList, List<Double> PBDITMarginList){
+	if (stockAnalysisVODB.getMaxCaptureYear() <capturedYearMax){//we have captured smt new
+		int countOfNewRecords = capturedYearMax - stockAnalysisVODB.getMaxCaptureYear();
+		if (countOfNewRecords > revenueList.size()){
+			countOfNewRecords = revenueList.size();
+		}
+		for (int i= countOfNewRecords-1;i>=0;i-- ){
+			stockAnalysisVODB.getRevenueOperationPerShare().add(revenueList.get(i));
+			stockAnalysisVODB.getPBDITPerShare().add(PBDITList.get(i));
+			stockAnalysisVODB.getPBDITMargin().add(PBDITMarginList.get(i));
+		}
+		
+		
+		//Now set YOY percentage chart data;
+		for (Double val: stockAnalysisVODB.getRevenueOperationPerShare()){
+			Double baseVal = stockAnalysisVODB.getRevenueOperationPerShare().get(0);
+			stockAnalysisVODB.getRevenueOperationPerShareYOY().add((val-baseVal)/baseVal*100);
+		}
+		for (Double val: stockAnalysisVODB.getPBDITPerShare()){
+			Double baseVal = stockAnalysisVODB.getPBDITPerShare().get(0);
+			stockAnalysisVODB.getPBDITPerShareYOY().add((val-baseVal)/baseVal*100);
+		}
+		for (Double val: stockAnalysisVODB.getPBDITMargin()){
+			Double baseVal = stockAnalysisVODB.getPBDITMargin().get(0);
+			stockAnalysisVODB.getPBDITMarginYOY().add((val-baseVal)/baseVal*100);
+		}
+		stockAnalysisVODB.setMaxCaptureYear(capturedYearMax);
+	}
+	
+	
 }
 	
 }

@@ -52,7 +52,7 @@ public class XirrCalculatorService {
 	            err = Math.abs(x1 - x0);
 	            
 	            x0 = x1;
-	            if (x1 > 1000000){
+	            if (x1 > 1000000 ){
 	            	break;
 	            }
 	        }
