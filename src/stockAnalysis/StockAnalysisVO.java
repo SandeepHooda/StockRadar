@@ -5,6 +5,7 @@ import java.util.List;
 
 public class StockAnalysisVO {
 	private String _id, category;
+	private long lastUpdateTime;
 	private String borderColor = "#4bc0c0";
 	private boolean fill = false;
 	private int maxCaptureYear ;
@@ -146,6 +147,12 @@ public class StockAnalysisVO {
 	}
 	public void setFill(boolean fill) {
 		this.fill = fill;
+	}
+	public long getLastUpdateTime() {
+		return lastUpdateTime;
+	}
+	public void setLastUpdateTime(long lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
 	}
 	
 	

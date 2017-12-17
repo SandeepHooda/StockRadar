@@ -1,8 +1,10 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -243,6 +245,22 @@ public class CorpAnalysis {
 	}
 	public static String [] dataArray = null;
 	public static void main(String[] args) {
+		
+       boolean internetAvailable = false;
+		
+		while (!internetAvailable){
+			
+			try {
+				Thread.sleep(1000);
+				InetAddress Address = InetAddress.getByName("www.nseindia.com");
+				internetAvailable = Address.isReachable(1000);
+				internetAvailable = true;
+			} catch (Exception e) {
+				System.err.println(" Not able to connect to internet!!!");
+				
+			} 
+		}
+		
 		dataArray = new String[12];
 		addStocksForAnalysis();
 		Gson  json = new Gson();
@@ -259,8 +277,12 @@ public class CorpAnalysis {
 				}
 			}
 			
-			ratios(stockAnalysisVO);
-			QuaterResults(stockAnalysisVO);
+			if( (new Date().getTime() - stockAnalysisVO.getLastUpdateTime())> (60000*60*24*10)){// 10 days
+				stockAnalysisVO.setLastUpdateTime(new Date().getTime());
+				ratios(stockAnalysisVO);
+				QuaterResults(stockAnalysisVO);
+			}
+			
 			analysisList.add(stockAnalysisVO);
 		}
 		
