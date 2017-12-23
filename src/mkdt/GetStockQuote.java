@@ -5,7 +5,10 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
@@ -25,6 +28,7 @@ import com.google.gson.reflect.TypeToken;
 import dao.StockPrice;
 import dao.StockPriceDAO;
 import dao.TickerDBData;
+import dao.XirrValue;
 
 
 public class GetStockQuote {
@@ -37,13 +41,35 @@ public class GetStockQuote {
 	public static float totalBSECount = 0;
 	public static long nseStartTime;
 	public static long bseStartTime;
+	final static Pattern nse_pattern_totalTradedVolume = Pattern.compile("\"totalTradedVolume\":\"(.+?)\"}");
+	final static Pattern nse_pattern_deliveryToTradedQuantity = Pattern.compile("\"deliveryToTradedQuantity\":\"(.+?)\",");
 	final static Pattern nse_pattern = Pattern.compile("\"lastPrice\":\"(.+?)\",");
 	final static Pattern nse_patternDate = Pattern.compile("\"lastUpdateTime\":\"(.+?)\",");
 	final static Pattern bse_pattern = Pattern.compile("<td.*>(.+?)</td><td><img");
 	public static SimpleDateFormat stockQuoteDateTime = new SimpleDateFormat("dd-MMM-yyyy h:m:s");
 	private static SimpleDateFormat yyyymmdd = new SimpleDateFormat("yyyyMMdd");
+	private static SimpleDateFormat dd = new SimpleDateFormat("dd");
+	private static int todayDate ; 
+	private static int todayDay;
+	private static int xirrForthNightStartDate, xirrForthNightEndDate;
 	static {
 		stockQuoteDateTime.setTimeZone(TimeZone.getTimeZone("IST"));
+		todayDate = Integer.parseInt(yyyymmdd.format(new Date()));
+		todayDay = Integer.parseInt(dd.format(new Date()));
+		Calendar cal = new GregorianCalendar();
+		if (todayDay >= 15){ // 1 to 15 of this month
+			cal.set(Calendar.DATE, 15);
+			xirrForthNightEndDate = Integer.parseInt(yyyymmdd.format(cal.getTime()));
+			cal.set(Calendar.DATE, 1);
+			xirrForthNightStartDate = Integer.parseInt(yyyymmdd.format(cal.getTime()));
+		}else {
+			//15 to last date of that month
+			cal.add(Calendar.MONTH, -1);
+		    cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		    xirrForthNightEndDate = Integer.parseInt(yyyymmdd.format(cal.getTime()));
+		    cal.set(Calendar.DATE, 15);
+		    xirrForthNightStartDate = Integer.parseInt(yyyymmdd.format(cal.getTime()));
+		}
 	}
 	
 	private static void savePriceInDB(CurrentMarketPrice markerResponse,  TickerDBData tickerDBData, boolean rowExistInDB, int counter){
@@ -56,8 +82,10 @@ public class GetStockQuote {
 			
 				StockPrice stockPrice = new StockPrice();
 				stockPrice.setPrice(markerResponse.getL_fix());
-				stockPrice.setDate(Integer.parseInt(yyyymmdd.format(new Date())));
+				stockPrice.setDate(todayDate);
 				stockPrices.add(0,stockPrice);
+				tickerDBData.setDeliveryToTradedQuantity(markerResponse.getDeliveryToTradedQuantity());
+				tickerDBData.setTotalTradedVolume(markerResponse.getTotalTradedVolume());
 				calculateXirr(tickerDBData);
 				StockPriceDAO.insertUpdateData(markerResponse.getE().toLowerCase()+counter, markerResponse.getT(), dataStr(tickerDBData), key, rowExistInDB);
 			
@@ -82,6 +110,93 @@ public class GetStockQuote {
 		System.out.printf(counter+" Progress NSE: %.2f \r",percentComplete);
 	}
 	
+	//xirr from 1 to 15 and then 15 to last day all days
+	//This will be used to calculate median for last  3 months, 6 months, 1 year , 2 year, 3 year and 5 years
+	private static void setEveryForthNight(TickerDBData tickerDBData) throws ParseException{
+		
+		//xirr15StartDate, xirr15EndDate
+		
+		if (tickerDBData.getXirrEveryForthNight().size() > 0){
+			XirrValue xirrValue = tickerDBData.getXirrEveryForthNight().get(0);
+			if (xirrValue.getEndDate()<xirrForthNightEndDate){//Check if already have latest forth night xirr or not
+				xirrValue = calXirrForLatestForthNight(tickerDBData);
+				if (null != xirrValue){
+					tickerDBData.getXirrEveryForthNight().add(0,xirrValue);
+				}
+				
+			}
+		}else {
+			XirrValue xirrValue = calXirrForLatestForthNight(tickerDBData);
+			if (null != xirrValue){
+				tickerDBData.getXirrEveryForthNight().add(calXirrForLatestForthNight(tickerDBData));
+			}
+			
+		}
+		
+		if (tickerDBData.getXirrEveryForthNight().size() >=6){//calculate last 3 months median xirr
+			tickerDBData.setMedian3(getMedian(tickerDBData.getXirrEveryForthNight().subList(0, 6)));
+		}
+		if (tickerDBData.getXirrEveryForthNight().size() >=12){//calculate last 6 months median xirr
+			tickerDBData.setMedian6(getMedian(tickerDBData.getXirrEveryForthNight().subList(0, 12)));
+		}
+		if (tickerDBData.getXirrEveryForthNight().size() >=24){//calculate last 1 year median xirr
+			tickerDBData.setMedian1Y(getMedian(tickerDBData.getXirrEveryForthNight().subList(0, 24)));
+		}
+		if (tickerDBData.getXirrEveryForthNight().size() >=48){//calculate last 2 year median xirr
+			tickerDBData.setMedian2Y(getMedian(tickerDBData.getXirrEveryForthNight().subList(0, 48)));
+		}
+		if (tickerDBData.getXirrEveryForthNight().size() >=72){//calculate last 3 year median xirr
+			tickerDBData.setMedian3Y(getMedian(tickerDBData.getXirrEveryForthNight().subList(0, 72)));
+		}
+		if (tickerDBData.getXirrEveryForthNight().size() >=120){//calculate last 5 year median xirr
+			tickerDBData.setMedian5Y(getMedian(tickerDBData.getXirrEveryForthNight().subList(0, 120)));
+		}
+	}
+	private static double getMedian(List<XirrValue> xirrList){
+		double [] numArray = new double[xirrList.size()];
+		int i=0;
+		for (XirrValue xirr : xirrList){
+			numArray[i] = xirr.getXirrValue();
+			i++;
+		}
+		Arrays.sort(numArray);
+		double median;
+		if (numArray.length % 2 == 0)
+		    median = ((double)numArray[numArray.length/2] + (double)numArray[numArray.length/2 - 1])/2;
+		else
+		    median = (double) numArray[numArray.length/2];
+		return median;
+	}
+	private static XirrValue calXirrForLatestForthNight(TickerDBData tickerDBData) throws ParseException{
+		List<StockPrice> stockPrices = tickerDBData.getStockPriceList();
+		double [] payments = new double[2];
+		Date [] dates = new Date[2];
+		boolean payment1Set = false, payment2Set = false;
+		int i = 0;
+		for (StockPrice price: stockPrices){
+			i++;
+			if (!payment1Set && price.getDate() <= xirrForthNightEndDate){//End of forth night not set
+				payment1Set = true;
+				payments[0] = price.getPrice();
+				dates [0] =  yyyymmdd.parse(""+ price.getDate());
+			}
+			if (payment1Set && (price.getDate() <= xirrForthNightStartDate  || i== stockPrices.size())){
+				payment2Set = true;
+				payments[1] = price.getPrice() *-1;
+				dates [1] =  yyyymmdd.parse(""+ price.getDate());
+			}
+			if (payment2Set){//Both paymemnt set now exit for loop and calculate xirr 
+				XirrValue xirrValue = new XirrValue();
+				xirrValue.setXirrValue(XirrCalculatorService.Newtons_method(0.1, payments, dates));
+				xirrValue.setEndDate(xirrForthNightEndDate);
+				xirrValue.setStartDate(xirrForthNightStartDate);
+				return xirrValue;
+				
+				
+			}
+		}
+		return null;
+	}
 	private static void calculateXirr(TickerDBData tickerDBData ){
 		
 		try {
@@ -98,6 +213,15 @@ public class GetStockQuote {
 			}
 			
 			tickerDBData.setCurrentMarketPrice(stockPrices.get(0).getPrice());
+			if (stockPrices.size() >=14){
+				try{
+					setEveryForthNight( tickerDBData);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				
+			}
+			 
 			int xiirDay = 5;
 			if (stockPrices.size() >=xiirDay){
 				payments[1] = stockPrices.get(xiirDay-1).getPrice() ;
@@ -221,6 +345,23 @@ public class GetStockQuote {
 								String price = quote.group(1).replaceAll(",", "");
 								nseQuote.setL_fix(Double.parseDouble(price));
 								
+								try{
+									//nse_pattern_totalTradedVolume
+									Matcher nse_pattern_totalTradedVolumeMatcher = nse_pattern_totalTradedVolume.matcher(respoNse);
+									nse_pattern_totalTradedVolumeMatcher.find();
+									price = nse_pattern_totalTradedVolumeMatcher.group(1).replaceAll(",", "");
+									nseQuote.setTotalTradedVolume(Double.parseDouble(price));
+									
+									Matcher nse_pattern_deliveryToTradedQuantityMatcher = nse_pattern_deliveryToTradedQuantity.matcher(respoNse);
+									nse_pattern_deliveryToTradedQuantityMatcher.find();
+									price = nse_pattern_deliveryToTradedQuantityMatcher.group(1).replaceAll(",", "");
+									nseQuote.setDeliveryToTradedQuantity(Double.parseDouble(price));
+									
+								}catch(Exception e){
+									
+								}
+								
+								
 								markerResponse = nseQuote;
 							}else {
 								System.out.println(" No info for "+ticker.getT());
@@ -308,6 +449,9 @@ public class GetStockQuote {
 			
 	
 			if (null!= markerResponse && markerResponse.getL_fix() > 0){
+				if (tickerDBData.getHighestPrice()< markerResponse.getL_fix()){
+					tickerDBData.setHighestPrice(markerResponse.getL_fix());
+				}
 				savePriceInDB(markerResponse,tickerDBData, rowExistInDB, counter);
 			}
 			updateProgress(ticker.getE().toUpperCase(), tickerDBData, counter);

@@ -12,7 +12,11 @@ public class TickerDBData {
 	private double xirr182;
 	private double xirr365;
 	private double currentMarketPrice;
+	private double highestPrice;
 	private List<StockPrice> stockPriceList = new ArrayList<StockPrice>();
+	private List<XirrValue> xirrEveryForthNight ;
+	private double median3,median6, median1Y, median2Y, median3Y, median5Y;
+	private double totalTradedVolume,deliveryToTradedQuantity;
 	public String get_id() {
 		return _id;
 	}
@@ -62,5 +66,70 @@ public class TickerDBData {
 	public void setCurrentMarketPrice(double currentMarketPrice) {
 		this.currentMarketPrice = currentMarketPrice;
 	}
+	public double getHighestPrice() {
+		return highestPrice;
+	}
+	public void setHighestPrice(double highestPrice) {
+		this.highestPrice = highestPrice;
+	}
+	public List<XirrValue> getXirrEveryForthNight() {
+		if (null == xirrEveryForthNight){
+			xirrEveryForthNight = new ArrayList<XirrValue>();
+		}
+		return xirrEveryForthNight;
+	}
+	public void setXirrEveryForthNight(List<XirrValue> xirrEveryForthNight) {
+		this.xirrEveryForthNight = xirrEveryForthNight;
+	}
+	public double getMedian3() {
+		return median3;
+	}
+	public void setMedian3(double median3) {
+		this.median3 = median3;
+	}
+	public double getMedian6() {
+		return median6;
+	}
+	public void setMedian6(double median6) {
+		this.median6 = median6;
+	}
+	public double getMedian1Y() {
+		return median1Y;
+	}
+	public void setMedian1Y(double median1y) {
+		median1Y = median1y;
+	}
+	public double getMedian2Y() {
+		return median2Y;
+	}
+	public void setMedian2Y(double median2y) {
+		median2Y = median2y;
+	}
+	public double getMedian3Y() {
+		return median3Y;
+	}
+	public void setMedian3Y(double median3y) {
+		median3Y = median3y;
+	}
+	public double getMedian5Y() {
+		return median5Y;
+	}
+	public void setMedian5Y(double median5y) {
+		median5Y = median5y;
+	}
+	public double getTotalTradedVolume() {
+		return totalTradedVolume;
+	}
+	public void setTotalTradedVolume(double totalTradedVolume) {
+		this.totalTradedVolume = totalTradedVolume;
+	}
+	public double getDeliveryToTradedQuantity() {
+		return deliveryToTradedQuantity;
+	}
+	public void setDeliveryToTradedQuantity(double deliveryToTradedQuantity) {
+		this.deliveryToTradedQuantity = deliveryToTradedQuantity;
+	}
+	
+	
 
 }

@@ -5,6 +5,7 @@ public class CurrentMarketPrice {
 	private String e;
 	private String lt_dts;
 	private double l_fix;
+	private double totalTradedVolume,deliveryToTradedQuantity;
 	public String toString(){
 		return t;
 	}
@@ -31,6 +32,18 @@ public class CurrentMarketPrice {
 	}
 	public void setL_fix(double l_fix) {
 		this.l_fix = l_fix;
+	}
+	public double getTotalTradedVolume() {
+		return totalTradedVolume;
+	}
+	public void setTotalTradedVolume(double totalTradedVolume) {
+		this.totalTradedVolume = totalTradedVolume;
+	}
+	public double getDeliveryToTradedQuantity() {
+		return deliveryToTradedQuantity;
+	}
+	public void setDeliveryToTradedQuantity(double deliveryToTradedQuantity) {
+		this.deliveryToTradedQuantity = deliveryToTradedQuantity;
 	}
 	
 

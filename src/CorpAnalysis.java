@@ -59,6 +59,12 @@ public class CorpAnalysis {
 		stocksForAnalysis.add(stock);
 		
 		stock = new StockAnalysisVO();
+		stock.set_id("asiangranitoindia/","/AGI04#AGI04");
+		stock.setCategory(sector_HouseConstruction);
+		stock.setBorderColor("#7b5040");
+		stocksForAnalysis.add(stock);
+		
+		stock = new StockAnalysisVO();
 		stock.set_id("actionconstructionequipment/","/ACE3#ACE3");
 		stock.setCategory(sector_Infra);
 		stock.setBorderColor("#800080");

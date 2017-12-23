@@ -70,14 +70,6 @@ public class Start {
 		}
 		
 		
-		
-		/*List<CurrentMarketPrice> tickers  = new ArrayList<CurrentMarketPrice>();
-		 CurrentMarketPrice t = new CurrentMarketPrice();
-		t.setE("NSE");
-		t.setT("20MICRONS");
-		tickers.add(t);*/
-		
-		
 		for (CurrentMarketPrice ticker: tickers ) {
             Runnable worker = new StockWorker(ticker,counter);
             executor.execute(worker);
@@ -159,8 +151,7 @@ public class Start {
 		dbDataJson =  StockPriceDAO.getADocument("nse-tickers-xirr","nse-tickers-xirr50","HEROMOTOCO",StockPriceDAO.mlabKeySonu);
 		if (null != dbDataJson) priceVOList.add(polulatePriceVO(dbDataJson,maxDays,"HEROMOTOCO", "#FF7F50"));
 		
-		dbDataJson =  StockPriceDAO.getADocument("nse-tickers-xirr","nse-tickers-xirr50","HINDUNILVR",StockPriceDAO.mlabKeySonu);
-		if (null != dbDataJson) priceVOList.add(polulatePriceVO(dbDataJson,maxDays,"HINDUNILVR", "#B8860B"));
+		
 		
 		dbDataJson =  StockPriceDAO.getADocument("nse-tickers-xirr","nse-tickers-xirr50","IFBIND",StockPriceDAO.mlabKeySonu);
 		if (null != dbDataJson) priceVOList.add(polulatePriceVO(dbDataJson,maxDays,"IFBIND", "#006400"));
