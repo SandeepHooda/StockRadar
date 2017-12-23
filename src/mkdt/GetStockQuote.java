@@ -83,9 +83,10 @@ public class GetStockQuote {
 				StockPrice stockPrice = new StockPrice();
 				stockPrice.setPrice(markerResponse.getL_fix());
 				stockPrice.setDate(todayDate);
+				stockPrice.setTotalTradedVolume(markerResponse.getTotalTradedVolume());
+				stockPrice.setDeliveryToTradedQuantity(markerResponse.getDeliveryToTradedQuantity());
 				stockPrices.add(0,stockPrice);
-				tickerDBData.setDeliveryToTradedQuantity(markerResponse.getDeliveryToTradedQuantity());
-				tickerDBData.setTotalTradedVolume(markerResponse.getTotalTradedVolume());
+				
 				calculateXirr(tickerDBData);
 				StockPriceDAO.insertUpdateData(markerResponse.getE().toLowerCase()+counter, markerResponse.getT(), dataStr(tickerDBData), key, rowExistInDB);
 			

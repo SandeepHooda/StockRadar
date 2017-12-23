@@ -16,7 +16,7 @@ public class TickerDBData {
 	private List<StockPrice> stockPriceList = new ArrayList<StockPrice>();
 	private List<XirrValue> xirrEveryForthNight ;
 	private double median3,median6, median1Y, median2Y, median3Y, median5Y;
-	private double totalTradedVolume,deliveryToTradedQuantity;
+
 	public String get_id() {
 		return _id;
 	}
@@ -117,18 +117,7 @@ public class TickerDBData {
 	public void setMedian5Y(double median5y) {
 		median5Y = median5y;
 	}
-	public double getTotalTradedVolume() {
-		return totalTradedVolume;
-	}
-	public void setTotalTradedVolume(double totalTradedVolume) {
-		this.totalTradedVolume = totalTradedVolume;
-	}
-	public double getDeliveryToTradedQuantity() {
-		return deliveryToTradedQuantity;
-	}
-	public void setDeliveryToTradedQuantity(double deliveryToTradedQuantity) {
-		this.deliveryToTradedQuantity = deliveryToTradedQuantity;
-	}
+	
 	
 	
 
