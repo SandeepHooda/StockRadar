@@ -14,12 +14,16 @@ import mkdt.GetStockQuote;
 import mkdt.StockWorker;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+
 import com.PriceChart.DBPriceData;
 import com.PriceChart.DataSets;
 import com.PriceChart.PriceVO;
 import com.PriceChart.StockPrice;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+
 import dao.StockPriceDAO;
 import dao.TickerDBData;
 
@@ -117,6 +121,8 @@ public class Start {
 		dbDataJson =  StockPriceDAO.getADocument("nse-tickers-xirr","nse-tickers-xirr20","BRITANNIA",StockPriceDAO.mlabKeySonu);
 		if (null != dbDataJson) priceVOList.add(polulatePriceVO(dbDataJson,maxDays,"BRITANNIA", "#4bc0c0"));
 		
+		dbDataJson =  StockPriceDAO.getADocument("nse-tickers-xirr","nse-tickers-xirr20","ASIANTILES",StockPriceDAO.mlabKeySonu);
+		if (null != dbDataJson) priceVOList.add(polulatePriceVO(dbDataJson,maxDays,"ASIANTILES", "#DEB887"));
 		
 		dbDataJson =  StockPriceDAO.getADocument("nse-tickers-xirr","nse-tickers-xirr30","CONTROLPR",StockPriceDAO.mlabKeySonu);
 		if (null != dbDataJson) priceVOList.add(polulatePriceVO(dbDataJson,maxDays,"CONTROLPR", "#4bc0c0"));
@@ -148,8 +154,9 @@ public class Start {
 		dbDataJson =  StockPriceDAO.getADocument("nse-tickers-xirr","nse-tickers-xirr40","HAVELLS",StockPriceDAO.mlabKeySonu);
 		if (null != dbDataJson) priceVOList.add(polulatePriceVO(dbDataJson,maxDays,"HAVELLS", "#D2691E"));
 		
-		dbDataJson =  StockPriceDAO.getADocument("nse-tickers-xirr","nse-tickers-xirr50","HEROMOTOCO",StockPriceDAO.mlabKeySonu);
-		if (null != dbDataJson) priceVOList.add(polulatePriceVO(dbDataJson,maxDays,"HEROMOTOCO", "#FF7F50"));
+		dbDataJson =  StockPriceDAO.getADocument("nse-tickers-xirr","nse-tickers-xirr40","HATSUN",StockPriceDAO.mlabKeySonu);
+		if (null != dbDataJson) priceVOList.add(polulatePriceVO(dbDataJson,maxDays,"HATSUN", "#9932CC"));
+		
 		
 		
 		
@@ -191,6 +198,9 @@ public class Start {
 		 
 		dbDataJson =  StockPriceDAO.getADocument("nse-tickers-xirr","nse-tickers-xirr100","VIPIND",StockPriceDAO.mlabKeySonu);
 		if (null != dbDataJson) priceVOList.add(polulatePriceVO(dbDataJson,maxDays,"VIPIND", "#FA8072"));
+		
+		dbDataJson =  StockPriceDAO.getADocument("nse-tickers-xirr","nse-tickers-xirr100","TVSMOTOR",StockPriceDAO.mlabKeySonu);
+		if (null != dbDataJson) priceVOList.add(polulatePriceVO(dbDataJson,maxDays,"TVSMOTOR", "#FF7F50"));
 		
 		dbDataJson =  StockPriceDAO.getADocument("nse-tickers-xirr","nse-tickers-xirr110","WHIRLPOOL",StockPriceDAO.mlabKeySonu);
 		if (null != dbDataJson) priceVOList.add(polulatePriceVO(dbDataJson,maxDays,"WHIRLPOOL", "#F5DEB3"));
