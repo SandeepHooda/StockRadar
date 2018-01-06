@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.http.HttpEntity;
@@ -368,7 +369,9 @@ public static void QuaterResults( StockAnalysisVO stockAnalysisVODB){
              
              
              populateQuaterlyResults(stockAnalysisVODB,  revenueList,PBDITList);  
-             System.out.println(" Done ");
+             System.out.println(" Corp analysis Done ");
+         	Scanner scanner = new Scanner(System.in);
+    		scanner.nextLine();
 		 
 	    } catch (IOException e) {
        	

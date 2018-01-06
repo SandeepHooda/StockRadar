@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
@@ -42,10 +43,14 @@ public class BulkDeals {
 		Calendar cal = new GregorianCalendar();
 		if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
 			System.out.println(" Today is exchange Holiday ");
+			Scanner scanner = new Scanner(System.in);
+			scanner.nextLine();
 			return;
 		}
 		if (cal.get(Calendar.HOUR_OF_DAY) < 16){
 			System.out.println(" Will run after 4 PM. Time is "+cal.get(Calendar.HOUR_OF_DAY) );
+			Scanner scanner = new Scanner(System.in);
+			scanner.nextLine();
 			return ;
 		}
 		checkRunPrequsite();
@@ -75,6 +80,9 @@ public class BulkDeals {
 		hotStockDB.set_id(sdf.format(new Date()));
 		hotStockDB.setHotStocks(hotStocks);
 		StockPriceDAO.insertUpdateData("hotstocks", "hotstocks", dataStr(hotStockDB), StockPriceDAO.mlabKeySonu, false);
+		System.out.println(" Bulk deals updated for today ");
+		Scanner scanner = new Scanner(System.in);
+		scanner.nextLine();
 	}
 
 	private static void checkRunPrequsite() {
